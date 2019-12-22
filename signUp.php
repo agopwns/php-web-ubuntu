@@ -5,39 +5,30 @@
 </head>
 <body>
 <form name="join" method="post" action="memberSave.php">
- <h1>input your information</h1>
- <table border="1">
-     
+ <h1>회원 가입</h1>
+ <table>
   <tr>
-   <td>ID</td>
+   <td>아이디</td>
    <td><input type="text" size="30" name="id"></td>
   </tr>
   <tr>
-   <td>Password</td>
+   <td>비밀번호</td>
    <td><input type="password" size="30" name="pwd"></td>
   </tr>
   <tr>
-   <td>Confirm Password</td>
+   <td>비밀번호 확인</td>
    <td><input type="password" size="30" name="pwd2"></td>
   </tr>
   <tr>
-   <td>name</td>
+   <td>이름</td>
    <td><input type="text" size="12" maxlength="10" name="name"></td>
   </tr>
   <tr>
-   <td>address</td>
+   <td>주소</td>
    <td><input type="text" size="40" name="addr"></td>
   </tr>
   <tr>
-   <td>sex</td>
-   <td><input type="text" size="6" maxlength="2" name="sex"></td>
-  </tr>
-  <tr>
-   <td>birth day</td>
-   <td><input type="text" size="6" maxlength="8" name="birthDay"></td>
-  </tr>
-  <tr>
-   <td>e-mail</td>
+   <td>이메일</td>
    <td><input type="text" size="30" name="email"></td>
   </tr>
  </table>
