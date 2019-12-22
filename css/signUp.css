@@ -1,0 +1,106 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: #292929;
+}
+
+/* Main Styling */
+html, body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.7em;
+  color: #fff;
+}
+
+a { text-decoration: none; color: #fff;}
+a:visited { text-decoration: none; color: #fff;}
+a:hover { text-decoration: none; color: #fff;}
+a:focus { text-decoration: none; color: #fff;}
+a:hover, a:active { text-decoration: none; color: #fff;}
+
+h1, h2{
+  padding-bottom: 40px;
+}
+
+h3 {
+  padding-bottom: 20px;
+}
+
+input {
+  color: #fff;
+}
+
+
+p {
+  margin: 10px 0;
+}
+
+table tr {
+  margin-bottom: 20px;
+  height: 50px;
+}
+
+/* Navbar */
+#navbar {
+  background: #292929;
+  color: #fff;
+  overflow: auto;
+}
+
+#navbar a {
+  color: #fff;
+} 
+
+#navbar h1 {
+  float: left;
+  padding-top: 20px;
+}
+
+/* float right로 인해 로그인, 회원가입, 아이디 찾기 등이 오른쪽으로 정렬됨*/
+#navbar ul {
+  list-style-type: none;
+  float: left;
+}
+
+#navbar ul li {
+  float: left;
+}
+
+#navbar ul li input{
+  float: left;
+  vertical-align: middle;
+}
+
+#navbar ul li a {
+  display: block;
+  padding: 20px;
+  text-align: center;
+}
+#navbar ul li a:hover, 
+#navbar ul li a.current {
+  background: #444;
+  color: #f7c08a;
+}
+
+#agree {
+  text-decoration: underline;
+}
+
+
+
+/* Utility Classes */
+.container{
+  margin: auto;
+  margin-top: 100px;
+  max-width: 500px;
+  overflow: auto;
+}
+
+.col{
+  width: 150px;
+}
+
+.agree{
+  display: inline-block;
+}
