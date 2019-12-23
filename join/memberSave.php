@@ -2,14 +2,7 @@
 require '/usr/share/php/libphp-phpmailer/class.phpmailer.php';
 require '/usr/share/php/libphp-phpmailer/class.smtp.php';
 
-//$host = '127.0.0.1';
-//$user = 'root';
-//$pw = 'root';
-//$dbName = 'web_db';
-//$db = mysqli_connect($host, $user, $pw, $dbName);
-
 $db = include('../dbconnect.php');
-
 
 if($db){
 //    echo "connect : success<br>";
@@ -50,7 +43,6 @@ Peanut Community 회원 가입 감사합니다.
 http://192.168.145.136/verify.php?email='.$email.'&hash='.$hash.'
 '; // Our message above including the link
 
-        $headers = 'From:noreply@peanutcommu.com' . "\r\n"; // Set from headers
         $fmail = 'agopwns@naver.com';
         $fname = 'PeanutCommunity';
         $result = mailer($fname, $fmail, $to, $subject, $message); // Send our email

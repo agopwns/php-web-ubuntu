@@ -27,6 +27,8 @@ p {
 
 
 
+
+
 /* Navbar */
 #navbar {
   background: #292929;
@@ -56,6 +58,7 @@ p {
 #navbar ul li input{
   float: left;
   vertical-align: middle;
+  color: #fff;
 }
 
 #navbar ul li a {

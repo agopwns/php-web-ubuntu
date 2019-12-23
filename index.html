@@ -9,6 +9,57 @@
     <link rel="stylesheet" href="css/style.css">
     <title>Peanut Community</title>
 </head>
+<script src="//code.jquery.com/jquery.min.js"></script>
+<script>
+
+    // 숨기기 초기화
+    $(document).ready(function() {
+
+        document.getElementById("isLogin").style.display="none";
+        document.getElementById("aLogout").style.display="none";
+    });
+
+    function login() {
+
+        alert("로그인 함수!");
+
+        var idValue = $("#inputId").val();
+        var passValue = $("#inputPassword").val();
+
+        $.ajax({
+            url:"login.php",
+            type:"POST",
+            data:{id:idValue, pass:passValue},
+            datatype:"html",
+            success:function(data){
+                // 성공시 html 영역 바꿔주기
+                if(data == "true"){
+
+                    // 감추기
+                    document.getElementById("inputId").style.display="none";
+                    document.getElementById("inputPassword").style.display="none";
+                    document.getElementById("aLogin").style.display="none";
+                    document.getElementById("aRegister").style.display="none";
+                    document.getElementById("aFindPass").style.display="none";
+
+                    // 보이기
+                    document.getElementById("isLogin").style.display="block";
+                    var temp = idValue + "님 환영합니다.";
+                    document.getElementById("isLogin").innerHTML += temp;
+                    // document.getElementById("aLogout").style.display="block";
+                } else {
+
+                    alert("아이디와 비밀번호를 다시 확인해주세요.");
+                }
+
+            }
+        });
+    }
+
+
+</script>
+
+
 <body>
 
 <div class="parent_container">
@@ -16,12 +67,14 @@
         <div class="container">
             <h1 class="logo"><a href="index.html">Peanut Community</a></h1>
             <ul>
-                <li><input type="text" id="inputId"/></li>
-                <li><input type="text" id="inputPassword"/></li>
-                <li><a href="index.html">로그인</a></li>
-                <li><a href="join/signUp.php">회원가입</a></li>
-                <li><a href="index.html">아이디 찾기</a></li>
-                <li><a href="index.html">비밀번호 찾기</a></li>
+                <li><input type="text" style="color: #fff;" id="inputId"/></li>
+                <li><input type="text" style="color: #fff;" id="inputPassword"/></li>
+                <li><a style="cursor:pointer" onclick="login()" id="aLogin">로그인</a></li>
+                <li><a href="join/signUp.php" id="aRegister">회원가입</a></li>
+                <!--<li><a href="index.html" id="aFindId">아이디 찾기</a></li>-->
+                <li><a href="index.html" id="aFindPass">비밀번호 찾기</a></li>
+                <li id="isLogin"></li>
+                <li ><a href="join/signUp.php" id="aLogout">로그아웃</a></li>
             </ul>
         </div>
 
@@ -71,8 +124,6 @@
             </ul>
         </div>
     </nav>
-    
-
 
     <nav id="navBest">
         <div class="best-container">
@@ -126,4 +177,8 @@
 
 
 </body>
+<script>
+
+
+</script>
 </html>

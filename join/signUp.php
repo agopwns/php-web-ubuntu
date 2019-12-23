@@ -4,6 +4,7 @@
     <title>sign up page</title>
     <link rel="stylesheet" href="../css/signUp.css">
 </head>
+<script src="//code.jquery.com/jquery.min.js"></script>
 <script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
 <script>
     function execPostCode() {
@@ -48,6 +49,22 @@
             }
         }).open();
     }
+
+    function idcheck() {
+
+        var idvalue = $("#id").val();
+
+        $.ajax({
+                url:"idcheck.php",
+                    type:"POST",
+                    data:{id:idvalue},
+                    datatype:"html",
+                    success:function(data){
+                        alert(data);
+                    }
+            });
+        }
+
 </script>
 <body>
 <div class="container">
@@ -57,10 +74,11 @@
         <table>
             <tr>
                 <td class="col">아이디</td>
-                <td>
-                    <input type="text" size="20" name="id">
-                    <input type="button" value="중복 검사" onclick="execPostCode();">
+                <td >
+                    <input type="text" size="20" id="id" name="id">
+                    <input type="button" value="중복 검사" onclick="idcheck();">
                 </td>
+                <td id="idtd" name="idtd"></td>
             </tr>
             <tr>
                 <td class="col">비밀번호 *</td>
