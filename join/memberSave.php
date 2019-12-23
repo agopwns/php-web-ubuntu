@@ -2,11 +2,13 @@
 require '/usr/share/php/libphp-phpmailer/class.phpmailer.php';
 require '/usr/share/php/libphp-phpmailer/class.smtp.php';
 
-$host = '127.0.0.1';
-$user = 'root';
-$pw = 'root';
-$dbName = 'web_db';
-$db = mysqli_connect($host, $user, $pw, $dbName);
+//$host = '127.0.0.1';
+//$user = 'root';
+//$pw = 'root';
+//$dbName = 'web_db';
+//$db = mysqli_connect($host, $user, $pw, $dbName);
+
+$db = include('../dbconnect.php');
 
 
 if($db){
