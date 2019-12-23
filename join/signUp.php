@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>sign up page</title>
-    <link rel="stylesheet" href="css/signUp.css">
+    <link rel="stylesheet" href="../css/signUp.css">
 </head>
 <script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
 <script>
@@ -91,11 +91,7 @@
             </tr>
             <tr>
                 <td class="col">이메일 *</td>
-                <td><input type="text" size="20" name="email"> <input type="button" value="인증 메일 보내기"></td>
-            </tr>
-            <tr>
-                <td class="col">인증 번호 *</td>
-                <td><input type="text" size="6" name="email"> <input type="button" value="인증"></td>
+                <td><input type="text" size="20" name="email"> <!--<input type="button" value="인증 메일 보내기">--></td>
             </tr>
         </table>
 
