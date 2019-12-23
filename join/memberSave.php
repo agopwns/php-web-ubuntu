@@ -1,24 +1,42 @@
 <?php
-$host = 'localhost';
+$host = '127.0.0.1';
 $user = 'root';
 $pw = 'root';
-$dbName = 'myService';
-$mysqli = new mysqli($host, $user, $pw, $dbName);
+$dbName = 'web_db';
+$db = mysqli_connect($host, $user, $pw, $dbName);
+//$mysqli = new mysqli($host, $user, $pw, $dbName);
 
-$id=$_POST['id'];
-$password=md5($_POST['pwd']);
-$password2=$_POST['pwd2'];
-$name=$_POST['name'];
-$address=$_POST['addr'];
-$sex=$_POST['sex'];
-$birthDay=$_POST['birthDay'];
-$email=$_POST['email'];
+if($db){
+    echo "connect : success<br>";
 
-$sql = "insert into account_info (id, pwd, name, addr, sex, birthDay, email)";
-$sql = $sql. "values('$id','$password','$name','$address','$sex','$birthDay','$email')";
-if($mysqli->query($sql)){
-    echo 'success inserting';
-}else{
-    echo 'fail to insert sql';
+    $id=$_POST['id'];
+    echo $id; echo "<br>";
+    $password=md5($_POST['pwd']);
+    echo $password ; echo "<br>";
+    $password2=$_POST['pwd2'];
+    $name=$_POST['name'];
+    echo $name; echo "<br>";
+    $zipcode=$_POST['addr1'];
+    echo $zipcode; echo "<br>";
+    $address=$_POST['addr2'];
+    $address = $address. $_POST['addr3'];
+    echo $address; echo "<br>";
+    $email=$_POST['email'];
+    echo $email; echo "<br>";
+
+    $sql = "insert into test (test)";
+    $sql = $sql. "values(1)";
+//    $sql = "insert into member (mem_userid, mem_password, mem_username, mem_zipcode, mem_address, mem_email)";
+//    $sql = $sql. "values('$id','$password','$name','$zipcode','$address','$email')";
+    if($db->query($sql)){
+        echo 'success inserting';
+    }else{
+        echo 'fail to insert sql';
+    }
 }
+else{
+    echo "disconnect : fail<br>";
+}
+
+
 ?>
