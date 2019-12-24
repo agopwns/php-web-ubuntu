@@ -13,10 +13,13 @@ if(isset($_POST['id']) && !empty($_POST['id']) AND isset($_POST['pass']) && !emp
 //        echo "select 성공";
         // 검색 된 결과가 있다면
         if ($result->num_rows > 0) {
-                echo "true";
-            } else {
-                echo "false";
-            }
+            session_start();
+            $_SESSION['user_id'] = $id;
+            echo "true";
+        } else {
+            session_destroy();
+            echo "false";
+        }
 
     } else {
         echo "select fail";
