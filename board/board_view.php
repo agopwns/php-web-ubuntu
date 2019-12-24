@@ -10,7 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="description" content="Welcome to the best Community">
     <meta name="keywords" content="Peanut Community">
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/board_view.css">
     <title>Peanut Community</title>
     <script src="//code.jquery.com/jquery.min.js"></script>
     <script type="text/javascript">
@@ -23,8 +23,9 @@
 <body>
 <div class="parent_container">
     <!--  헤더  -->
-    <div id="headers"></div>
-
+    <div class='view-container'>
+    <a href="../index.html" style="font-size:40px; font-weight: bold; color: #fff;">Peanut Community</a><br>
+    <a href="../index.html" style="font-size:30px; font-weight: bold; color: #fff;">게시판</a>
     <!--  본문 영역  -->
     <?php
         $board_id = $_GET['bNO'];
@@ -42,26 +43,28 @@
                     $content = $row['board_content'];
                     $regtime = $row['board_regtime'];
 
-                    echo "<nav id='navBest'>";
+
                     echo "<div class='title-container'>";
-                    echo "<h3>$title</h3>";
+                    echo "<p>$title</p>";
                     echo "</div>";
                     echo "<div class='info-container'>";
-                    echo "<div class='info-child'>$userid</div>";
-                    echo "<div class='info-child'>$viewCount</div>";
-                    echo "<div class='info-child'>$regtime</div>";
+                    echo "<div class='info-child'>작성자 $userid</div>";
+                    echo "<div class='info-child'>조회수 $viewCount</div>";
+                    echo "<div class='info-child'>등록 시간 $regtime</div>";
                     echo "</div>";
                     echo "<div class='content-container'>";
-                    echo "<div class='info-child'>$content</div>";
+                    echo "<div>$content</div>";
                     echo "</div>";
+                    echo "<p style='font-size:30px; color: #fff;'>댓글</p>";
                     echo "<div class='comment-container'>";
                     echo "</div>";
-                    echo "</nav>";
+
                 }
             }
             } else {
         }
     ?>
+    </div>;
 </div>
 
 

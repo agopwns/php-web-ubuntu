@@ -40,13 +40,13 @@ button {
 #boardList .btnSet {text-align:right}
 
 #boardHeader {
-  margin-left: 60px;
+  padding-left: 140px;
 }
 
 /* 글쓰기 */
 
 #boardWrite table {width:720px}
-#boardWrite th {width:100px;padding:5px;text-align:right;vertical-align: top}
+#boardWrite th {width:100px;padding:5px;vertical-align: top}
 #boardWrite td {width:620px;padding:5px}
 
 #boardWrite #bID {width:180px}

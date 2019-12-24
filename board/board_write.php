@@ -17,7 +17,7 @@
 <div class="container">
     <article class="boardArticle">
         <div id="boardWrite">
-            <div id="boardHeader">
+            <div id="boardHeader" style="margin-left: 100px">
                 <h1 class="logo"><a href="../index.html">Peanut Community</a></h1>
                 <?php
                 $board_name = $_GET['page'];

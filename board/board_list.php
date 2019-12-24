@@ -37,7 +37,7 @@
                         echo "</div>";
                         echo "<div class='table-div-child' style='width: 100px; float:right'>";
                         echo "<a href='board_write.php?page=$result'>";
-                        echo "<input type='button' style='color:#fff;' value='글쓰기'></input>";
+                        echo "<input type='button' style='color:#fff;' value='글쓰기'/>";
                         echo "</a>";
                         ?>
                     </div>
@@ -56,18 +56,14 @@
                 // 여기서 게시판에 따라 검색을 나눈다.
                 // 공지 게시판들은 분기문을 따로 설정해줘야 하며
                 // 주제
+                $board_name = $_GET['page'];
+                $result = str_replace('%20' , '', $board_name);
                 // 1. 공지 기능
 
+
                 // 2. 게시판 주제별
-
-
-
-                $sql = "SELECT * FROM board";
+                $sql = "SELECT * FROM board WHERE board_category='$result'";
                 $result = $db->query($sql);
-//                if($result)
-//                    echo "select 성공";
-//                else
-//                    echo "select 실패";
 
                 if ($result->num_rows > 0) {
                     while($row = $result->fetch_assoc())
@@ -79,12 +75,14 @@
 //                            $row['b_date'] = $time;
 //                        else
 //                            $row['b_date'] = $date;
-                        ?>
-                        <tr style="height: 60px; ">
-                            <td style="text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white;" class="hit"><?php echo $row['board_view_count']?></td>
-                            <td style="border-bottom:1px solid white; border-collapse:collapse; color:white;" class="title"><?php echo $row['board_title']?></td>
-                            <td style="text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white;" class="author"><?php echo $row['board_regtime']?></td>
-                            <td style="text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white;" class="date"><?php echo $row['board_userid']?></td>
+                        $bNO = $row['board_id'];
+                        echo "<tr style='height: 60px' align='center' onClick='location.href=\"./board_view.php?bNO=".$bNO."\"' style='cursor:pointer'>"
+                    ?>
+
+                            <td style="text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;" class="hit"><?php echo $row['board_view_count']?></td>
+                            <td style="border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;" class="title"><?php echo $row['board_title']?></td>
+                            <td style="text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;" class="author"><?php echo $row['board_regtime']?></td>
+                            <td style="text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;" class="date"><?php echo $row['board_userid']?></td>
                         </tr>
                         <?php
                     }
