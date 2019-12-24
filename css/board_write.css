@@ -1,106 +1,64 @@
-/* Reset */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  background-color: #292929;
-}
+.boardArticle {width:720px}
 
-/* Main Styling */
-html, body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  line-height: 1.7em;
+/* 글목록 */
+html {
+  background: #292929;
   color: #fff;
 }
 
-a { text-decoration: none; color: #fff;}
+a { text-decoration: none;}
 a:visited { text-decoration: none; color: #fff;}
 a:hover { text-decoration: none; color: #fff;}
 a:focus { text-decoration: none; color: #fff;}
 a:hover, a:active { text-decoration: none; color: #fff;}
 
-h1, h2{
-  padding-bottom: 40px;
-}
 
-h3 {
-  padding-bottom: 20px;
-}
-
-input {
-  color: #fff;
-}
-
-
-p {
-  margin: 10px 0;
-}
-
-table tr {
-  margin-bottom: 20px;
-  height: 50px;
-}
-
-/* Navbar */
-#navbar {
+input, textarea {
   background: #292929;
   color: #fff;
-  overflow: auto;
 }
 
-#navbar a {
+button {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: #292929;
   color: #fff;
-} 
-
-#navbar h1 {
-  float: left;
-  padding-top: 20px;
 }
 
-/* float right로 인해 로그인, 회원가입, 아이디 찾기 등이 오른쪽으로 정렬됨*/
-#navbar ul {
-  list-style-type: none;
-  float: left;
+#boardList table {width:720px}
+
+#boardList th {padding:5px 0;border-top:2px solid #666;border-bottom:1px solid #666}
+#boardList td {padding:8px 0;border-bottom:1px solid #666}
+
+#boardList .no {width:60px;text-align:center}
+#boardList .title {}
+#boardList .author {width:100px;text-align:center}
+#boardList .date {width:100px;text-align:center}
+#boardList .hit {width:40px;text-align:center}
+
+#boardList .btnSet {text-align:right}
+
+#boardHeader {
+  margin-left: 60px;
 }
 
-#navbar ul li {
-  float: left;
-}
+/* 글쓰기 */
 
-#navbar ul li input{
-  float: left;
-  vertical-align: middle;
-}
+#boardWrite table {width:720px}
+#boardWrite th {width:100px;padding:5px;text-align:right;vertical-align: top}
+#boardWrite td {width:620px;padding:5px}
 
-#navbar ul li a {
-  display: block;
-  padding: 20px;
-  text-align: center;
-}
-#navbar ul li a:hover, 
-#navbar ul li a.current {
-  background: #444;
-  color: #f7c08a;
-}
+#boardWrite #bID {width:180px}
+#boardWrite #bPassword {width:180px}
+#boardWrite #bTitle {width:400px}
+#boardWrite #bContent {width:550px;height:300px}
 
-#agree {
-  text-decoration: underline;
-}
+#boardWrite .btnSet {text-align:center}
 
-
-
-/* Utility Classes */
-.container{
+.container {
   margin: auto;
   margin-top: 100px;
-  max-width: 500px;
+  max-width: 750px;
   overflow: auto;
-}
-
-.col{
-  width: 150px;
-}
-
-.agree{
-  display: inline-block;
 }
