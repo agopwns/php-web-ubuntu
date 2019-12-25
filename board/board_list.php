@@ -20,12 +20,12 @@ if(isset($_GET['searchColumn'])) {
     $subString .= '&amp;searchColumn=' . $searchColumn;
 }
 if(isset($_GET['searchText'])) {
-    $searchText = $_GET['searchText'];
+    $searchText =  $_GET['searchText'];
     $subString .= '&amp;searchText=' . $searchText;
 }
 if(isset($searchColumn) && isset($searchText)) {
-    $searchSql = ' and ' . $searchColumn . ' like "%' . $searchText . '%"';
-    $searchSqlWhere = ' where ' . $searchColumn . ' like "%' . $searchText . '%"';
+    $searchSql = " and " . $searchColumn . " like '%" . $searchText .  "%'";
+    $searchSqlWhere = ' where ' . $searchColumn . ' like %' . $searchText . '%';
 } else {
     $searchSql = '';
     $searchSqlWhere = '';
@@ -37,13 +37,13 @@ if($board_name != '최근글')
     $sql = "select count(*) as cnt from board WHERE board_category='$board_name' $searchSql order by board_id desc";
 else
     $sql = "select count(*) as cnt from board $searchSqlWhere order by board_id desc";
-echo $sql;//xptmxm
+echo $sql."<br>";//xptmxm
 
 $result = $db->query($sql);
 $row = $result->fetch_assoc();
 
 $allPost = $row['cnt']; //전체 게시글의 수
-echo $allPost; //xptmxm
+echo $allPost."<br>"; //xptmxm
 
 if(empty($allPost)) {
     $emptyData = '<tr><td class="textCenter" colspan="5">글이 존재하지 않습니다.</td></tr>';
@@ -108,8 +108,10 @@ if(empty($allPost)) {
         $sql = 'select * from board ' . $searchSqlWhere . ' order by board_id desc' . $sqlLimit;
         echo $sql."<br>";
     }
-    else
-        $sql = "select * from board where board_category='$board_name $searchSql' order by board_id desc" . $sqlLimit; //원하는 개수만큼 가져온다. (0번째부터 20번째까지
+    else{
+        $sql = "select * from board where board_category='$board_name' $searchSql order by board_id desc" . $sqlLimit; //원하는 개수만큼 가져온다. (0번째부터 20번째까지
+        echo $sql."<br>";
+    }
 
     $result = $db->query($sql);
 }
@@ -151,11 +153,12 @@ if(empty($allPost)) {
                         echo "<div class='table-div-child' style='width: 300px; float:right'>";
                         ?>
                         <div class="searchBox">
-                            <form action="../board_list.php" method="get" >
+                            <form action="./board_list.php" method="get" >
+                                <?php echo '<input type="hidden" name="bName" value="' . $bName . '">' ?>
                                 <select name="searchColumn" style="color:#fff;">
-                                    <option <?php echo $searchColumn=='b_title'?'selected="selected"':null?> value="b_title">제목</option>
-                                    <option <?php echo $searchColumn=='b_content'?'selected="selected"':null?> value="b_content">내용</option>
-                                    <option <?php echo $searchColumn=='b_id'?'selected="selected"':null?> value="b_id">작성자</option>
+                                    <option <?php echo $searchColumn=='board_title'?'selected="selected"':null?> value="board_title">제목</option>
+                                    <option <?php echo $searchColumn=='board_content'?'selected="selected"':null?> value="board_content">내용</option>
+                                    <option <?php echo $searchColumn=='board_userid'?'selected="selected"':null?> value="board_userid">작성자</option>
                                 </select>
                                 <input type="text" name="searchText" value="<?php echo isset($searchText)?$searchText:null?>" style="color:#fff;  width: 120px;">
                                 <button type="submit" style="color:#fff">검색</button>
@@ -166,7 +169,7 @@ if(empty($allPost)) {
                             echo "<a href='board_write.php?bName=$bName'>";
                             if(isset($_SESSION['user_id'])) {
                                 if($bName != '최근글' && $bName != '공지'){
-                                    echo "<input type='button' style='color:#fff; margin-left: 10px;' value='글쓰기'/>";
+                                    echo "<input type='button' style='color:#fff;' value='글쓰기'/>";
                                 }
                             }
                             echo "</a>";
