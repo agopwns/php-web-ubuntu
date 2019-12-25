@@ -36,6 +36,7 @@ if(isset($_SESSION['user_id'])) {
         echo "<script>location.href='$replaceURL'</script>";
     } else {
 //        $msg = "글을 등록하지 못했습니다.";
+        echo "글을 등록하지 못했습니다.";
         ?>
         <script>
             alert("<?php echo $msg?>");

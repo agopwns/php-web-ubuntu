@@ -1,6 +1,22 @@
 <?php
     session_start();
     $db = include('../dbconnect.php');
+    $bNO = $_GET['bNO'];
+
+if(!empty($bNO) && empty($_COOKIE['board_view' . $bNO])) {
+    $sql = 'update board set board_view_count = board_view_count + 1 where board_id = ' . $bNO;
+    $result = $db->query($sql);
+    if(empty($result)) {
+        ?>
+        <script>
+            alert('오류가 발생했습니다.');
+            history.back();
+        </script>
+        <?php
+    } else {
+        setcookie('board_view' . $bNO, TRUE, time() + (60 * 60 * 24), '/');
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -37,9 +53,11 @@
     <!--  헤더  -->
     <div class='view-container'>
     <a href="../index.html" style="font-size:40px; font-weight: bold; color: #fff;">Peanut Community</a><br>
-    <a href="../index.html" style="font-size:30px; font-weight: bold; color: #fff;">게시판</a>
+<!--        <a href="../index.html" style="font-size:30px; font-weight: bold; color: #fff;">게시판</a>-->
     <!--  본문 영역  -->
     <?php
+        $bName = $_GET['bName'];
+        echo '<a href="./board_list.php?bName=' . $bName . '" style="font-size:20px; font-weight: bold; color: #fff;">> '. $bName . ' 게시판</a>';
         $board_id = $_GET['bNO'];
         $sql = "SELECT * FROM board WHERE board_id='$board_id'";
         $result = $db->query($sql);
@@ -57,7 +75,7 @@
                     $regtime = $row['board_regtime'];
 
                     echo "<div class='title-container'>";
-                    echo "<p>$title</p>";
+                    echo "<p>제목 : $title</p>";
                     echo "</div>";
                     echo "<div class='info-container'>";
                     echo "<div class='info-child'>작성자 $userid</div>";

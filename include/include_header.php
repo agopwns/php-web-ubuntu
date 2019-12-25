@@ -48,7 +48,7 @@
 <body>
 <div class="parent_container">
     <nav id="navbar">
-        <div style="position: fixed; bottom: 600px; right: 160px;">
+        <div style="position: fixed; bottom: 600px; right: 130px;">
             <a href="#">TOP</a>
         </div>
         <div class="container">
