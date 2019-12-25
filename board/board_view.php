@@ -57,7 +57,6 @@ if(!empty($bNO) && empty($_COOKIE['board_view' . $bNO])) {
     <!--  본문 영역  -->
     <?php
         $bName = $_GET['bName'];
-        echo '<a href="./board_list.php?bName=' . $bName . '" style="font-size:20px; font-weight: bold; color: #fff;">> '. $bName . ' 게시판</a>';
         $bNO = $_GET['bNO'];
         $sql = "SELECT * FROM board WHERE board_id='$bNO'";
         $result = $db->query($sql);
@@ -73,6 +72,11 @@ if(!empty($bNO) && empty($_COOKIE['board_view' . $bNO])) {
                     $viewCount = $row['board_view_count'];
                     $content = $row['board_content'];
                     $regtime = $row['board_regtime'];
+                    $category = $row['board_category'];
+                    $recommend_count = $row['board_recommend_count'];
+                    $report_count = $row['board_report_count'];
+
+                    echo '<a href="./board_list.php?bName=' . $category . '" style="font-size:20px; font-weight: bold; color: #fff;">> '. $category . ' 게시판</a>';
 
                     echo "<div class='title-container'>";
                     echo "<p>제목 : $title</p>";
@@ -81,11 +85,14 @@ if(!empty($bNO) && empty($_COOKIE['board_view' . $bNO])) {
                     echo "<div class='info-child'>작성자 $userid</div>";
                     echo "<div class='info-child'>조회수 $viewCount</div>";
                     echo "<div class='info-child'>등록 시간 $regtime</div>";
+                    echo "<div class='info-child'>추천 $recommend_count</div>";
+                    echo "<div class='info-child'>신고 $report_count</div>";
                     echo "</div>";
                     echo "<div class='content-container' style='min-height: 400px; border-bottom: 1px solid white; border-top: 1px solid white'>";
                     echo "<div style='padding-top: 10px;'>$content</div>";
                     echo "</div>";
                     echo "<div class='control-container'>";
+
                     if($session_id == $userId){
                         echo "<div class='control-child'><button style='color:#fff;' onclick='modifyBoard($bNO)'>수정</a></div>";
                         echo "<div class='control-child'><button style='color:#fff;' onclick='deleteConfirm($bNO)'>삭제</button></div>";
@@ -160,7 +167,7 @@ if(!empty($bNO) && empty($_COOKIE['board_view' . $bNO])) {
                             </tbody>
                         </table>
                         <div class="btnSet">
-                            <input type="submit" value="코멘트 작성" style="color:#fff;">
+                            <input type="submit" value="작성" style="color:#fff;">
                         </div>
                     </form>
                     <?php

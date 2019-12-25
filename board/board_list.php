@@ -4,7 +4,7 @@
 // 게시판 카테고리명 가져오기
 $board_name = $_GET['bName'];
 $board_name = str_replace('%20' , '', $board_name);
-echo $board_name ."<br>";//xptmxm
+//echo $board_name ."<br>";//xptmxm
 
 /* 페이징 시작 */
 //페이지 get 변수가 있다면 받아오고, 없다면 1페이지를 보여준다.
@@ -37,13 +37,13 @@ if($board_name != '최근글')
     $sql = "select count(*) as cnt from board WHERE board_category='$board_name' $searchSql order by board_id desc";
 else
     $sql = "select count(*) as cnt from board $searchSqlWhere order by board_id desc";
-echo $sql."<br>";//xptmxm
+//echo $sql."<br>";//xptmxm
 
 $result = $db->query($sql);
 $row = $result->fetch_assoc();
 
 $allPost = $row['cnt']; //전체 게시글의 수
-echo $allPost."<br>"; //xptmxm
+//echo $allPost."<br>"; //xptmxm
 
 if(empty($allPost)) {
     $emptyData = '<tr><td class="textCenter" colspan="5">글이 존재하지 않습니다.</td></tr>';
@@ -106,11 +106,11 @@ if(empty($allPost)) {
     $sqlLimit = ' limit ' . $currentLimit . ', ' . $onePage; //limit sql 구문
     if ($board_name == '최근글'){
         $sql = 'select * from board ' . $searchSqlWhere . ' order by board_id desc' . $sqlLimit;
-        echo $sql."<br>";
+//        echo $sql."<br>";//xptmxm
     }
     else{
         $sql = "select * from board where board_category='$board_name' $searchSql order by board_id desc" . $sqlLimit; //원하는 개수만큼 가져온다. (0번째부터 20번째까지
-        echo $sql."<br>";
+//        echo $sql."<br>";//xptmxm
     }
 
     $result = $db->query($sql);
@@ -128,15 +128,15 @@ if(empty($allPost)) {
     <title>Peanut Community</title>
     <script src="//code.jquery.com/jquery.min.js"></script>
     <script type="text/javascript">
-        $(document).ready( function() {
-            $("#headers").load("../include/include_header.php");  // 원하는 파일 경로를 삽입하면 된다
-        });
+        // $(document).ready( function() {
+        //     $("#headers").load("../include/include_header.php");  // 원하는 파일 경로를 삽입하면 된다
+        // });
     </script>
 
 </head>
 <body>
 <div class="parent_container">
-    <div id="headers"></div>
+    <div id="headers"><?php include '../include/include_header.php'?></div>
 
     <nav id="navBoardList">
         <div class="boardList-container">
@@ -185,7 +185,8 @@ if(empty($allPost)) {
                 <thead>
                 <tr style="height: 40px;">
                     <th scope="col" class="no" style="width:7%; border-bottom: 1px solid white; color:white;">추천</th>
-                    <th scope="col" class="title" style="width:58%; border-bottom: 1px solid white; color:white;">제목</th>
+                    <th scope="col" class="category" style="width:10%; border-bottom: 1px solid white; color:white;">카테고리</th>
+                    <th scope="col" class="title" style="width:55%; border-bottom: 1px solid white; color:white;">제목</th>
                     <th scope="col" class="author" style="width:20%; border-bottom: 1px solid white; color:white;">작성시간</th>
                     <th scope="col" class="date" style="width:15%; border-bottom: 1px solid white; color:white;">작성자</th>
                 </tr>
@@ -215,12 +216,19 @@ if(empty($allPost)) {
                             $bStatus = $row['board_status'];
                             $bRecommendCount = $row['board_recommend_count'];
                             $bTitle = $row['board_title'];
-                            $bRegTime = $row['board_regtime'];
+                            $bRegTime = $row['board_regtime']; // 작성 시간 분 단위까지
+
+                            $date = strtotime($bRegTime);
+                            $bRegTime = date('Y-m-d H:i', $date);
+//                            $bRegTime = $bRegTime->format('Y-m-d H:i');
+
                             $bUserId = $row['board_userid'];
+                            $bCategory = $row['board_category'];
                             echo "<tr style='height: 60px' onClick='location.href=\"./board_view.php?bNO=" . $bNO . "&bName=" . $bName . "\"' style='cursor:pointer'>";
                             if ($bStatus == 'D') {
                                 // 삭제된 게시물
                                 echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='hit'>$bRecommendCount</td>";
+                                echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='hit'>$bCategory</td>";
                                 echo "<td style='border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='title'>삭제된 게시물입니다.</td>";
                                 echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='author'>$bRegTime</td>";
                                 echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='date'>$bUserId</td>";
@@ -228,12 +236,14 @@ if(empty($allPost)) {
                             } else if ($bStatus == 'B') {
                                 // 블라인드 처리된 게시물
                                 echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='hit'>$bRecommendCount</td>";
+                                echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='hit'>$bCategory</td>";
                                 echo "<td style='border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='title'>블라인드 처리된 게시물입니다.</td>";
                                 echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='author'>$bRegTime</td>";
                                 echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='date'>$bUserId</td>";
                             } else {
                                 // 정상 게시물
                                 echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='hit'>$bRecommendCount</td>";
+                                echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='hit'>$bCategory</td>";
                                 echo "<td style='border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='title'>$bTitle</td>";
                                 echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='author'>$bRegTime</td>";
                                 echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='date'>$bUserId</td>";

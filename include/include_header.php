@@ -1,6 +1,6 @@
 <?php
     session_start();
-    $db = include('../dbconnect.php');
+//    $db = include('../dbconnect.php');
 ?>
 <!DOCTYPE html>
 <html lang="en">

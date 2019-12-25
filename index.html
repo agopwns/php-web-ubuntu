@@ -13,9 +13,9 @@
     <title>Peanut Community</title>
     <script src="//code.jquery.com/jquery.min.js"></script>
     <script type="text/javascript">
-        $(document).ready( function() {
-            $("#headers").load("/include/include_header.php");  // 원하는 파일 경로를 삽입하면 된다
-        });
+        // $(document).ready( function() {
+        //     $("#headers").load("/include/include_header.php");  // 원하는 파일 경로를 삽입하면 된다
+        // });
     </script>
 </head>
 
@@ -25,8 +25,8 @@
 <body>
 
 <div class="parent_container">
-    <div id="headers"></div>
-
+    <div id="headers"><?php include './include/include_header.php'?></div>
+    
     <nav id="navBest">
         <div class="best-container">
 
