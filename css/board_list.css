@@ -25,83 +25,33 @@ p {
   margin: 10px 0;
 }
 
-/* Navbar */
-#navbar {
-  background: #292929;
-  color: #fff;
-  overflow: auto;
-}
-
-#navbar a {
-  color: #fff;
-}
-
-#navbar h1 {
-  float: left;
-  padding-top: 20px;
-}
-
-/* float right로 인해 로그인, 회원가입, 아이디 찾기 등이 오른쪽으로 정렬됨*/
-#navbar ul {
-  list-style-type: none;
-  float: left;
-}
-
-#navbar ul li {
-  float: left;
-}
-
-#navbar ul li input{
-  float: left;
-  vertical-align: middle;
-  color: #fff;
-}
-
-#navbar ul li a {
-  display: block;
-  padding: 20px;
-  text-align: center;
-}
-#navbar ul li a:hover,
-#navbar ul li a.current {
-  background: #444;
-  color: #f7c08a;
-}
-
 
 /* navMonthBest, navWeekBest */
-#navBest {
+#navBoardList {
   overflow: auto;
   margin-top: 40px;
   margin-left: 40px;
+  margin-bottom: 70px;
 }
 
-#navBest div {
+#navBoardList div {
   /* margin-bottom: 20px; */
   /* display: block; */
 }
 
-
-#navBest ul{
-  margin-bottom: 40px;
-}
-
-#navBest h2, h3, ul, ul a{
+#navBoardList h2, h3, ul, ul a{
   color: #fff;
   list-style-type: none;
 }
 
-#navBest ul li{
-  margin-top: 20px;
-  margin-bottom: 40px;
-}
 
-#navBest ul li a{
+
+#navBoardList ul li a{
   font-size: 20px;
 }
 
-#navBest ul li a:hover,
-#navBest ul li a.current {
+#navBoardList ul li a:hover,
+#navBoardList ul li a.current {
   background: #444;
   color: #f7c08a;
 }
@@ -115,9 +65,7 @@ p {
 
 /* Utility Classes */
 .parent-container{
-  margin: auto;
-  max-width: 1100px;
-  overflow: auto;
+margin-bottom: 40px;
 }
 
 .container {
@@ -134,25 +82,25 @@ p {
   padding: 0 20px;
 }
 
-.best-container {
+.boardList-container {
   margin: auto;
   max-width: 1150px;
   overflow: auto;
   padding: 0 20px;
 }
 
-.best-container table th, td{
-  border: 1px solid white;
+.boardList-container table th, td{
+  border-bottom: 1px solid white;
 }
 
 #boardTable table {
-  border: 1px solid white;
+  border-bottom: 1px solid white;
   color: #fff;
   border-collapse:collapse;
 }
 
 #boardTable tr th, tr td{
-  border: 1px solid white;
+  border-bottom: 1px solid white;
   color: #fff;
   border-collapse:collapse;
 }
@@ -165,39 +113,16 @@ p {
   color: #f7c08a;
 }
 
-.lead {
-  font-size: 20px;
-}
-
-.btn {
-  display: inline-block;
-  font-size: 18px;
-  color: white;
-  background: #292929;
-  padding: 13px 20px;
-  border: none;
-  cursor: pointer;
-}
-
-.btn:hover {
-  background: #f7c08a;
-  color: #292929;
-}
-
-.btn-light {
-  background: #f4f4f4;
-  color: #292929;
-}
-
-.bg-dark {
-  background: #292929;
-  color: #fff;
-}
-.bg-light {
-  background: #f4f4f4;
-  color: #333;
-}
-.bg-primary {
-  background: #292929;
+#boardTable tbody tr, tbody td:hover,
+#boardTable tbody tr, tbody td.current {
+  background: #444;
   color: #f7c08a;
+}
+
+.paging {
+  margin-top: 10px;
+}
+
+.paging ul li{
+  font-size: 15px;
 }

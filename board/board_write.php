@@ -1,7 +1,7 @@
 <doctype html>
 <html>
 <head>
-    <title>write page</title>
+    <title>Peanut Community</title>
     <link rel="stylesheet" href="../css/board_write.css">
 </head>
 <script src="//code.jquery.com/jquery.min.js"></script>
@@ -17,15 +17,15 @@
 <div class="container">
     <article class="boardArticle">
         <div id="boardWrite">
-            <div id="boardHeader" style="margin-left: 100px">
+            <div id="boardHeader" >
                 <h1 class="logo"><a href="../index.html">Peanut Community</a></h1>
                 <?php
-                $board_name = $_GET['page'];
+                $board_name = $_GET['bName'];
                 $result = str_replace('%20' , '', $board_name);
                 echo "<h3>$result 게시판 글쓰기</h3>";
                 ?>
             </div>
-            <form action="./write_update.php" method="post">
+            <form action="./write_insert.php" method="post">
                 <table id="boardWrite">
                     <tbody>
                     <tr>
@@ -39,7 +39,7 @@
                     <tr>
                         <td>
                             <?php
-                            $board_name = $_GET['page'];
+                            $board_name = $_GET['bName'];
                             $result = str_replace('%20' , '', $board_name);
                             echo "<input type='hidden' id='bBoard_name' name='bBoard_name' value='$result'/>"
                             ?>
