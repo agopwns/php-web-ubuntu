@@ -25,7 +25,7 @@ if(isset($_GET['searchText'])) {
 }
 if(isset($searchColumn) && isset($searchText)) {
     $searchSql = " and " . $searchColumn . " like '%" . $searchText .  "%'";
-    $searchSqlWhere = ' where ' . $searchColumn . ' like %' . $searchText . '%';
+    $searchSqlWhere = " where " . $searchColumn . " like '%" . $searchText . "%'";
 } else {
     $searchSql = '';
     $searchSqlWhere = '';
