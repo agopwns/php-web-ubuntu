@@ -31,6 +31,11 @@ if(empty($w) || $w === 'w') { //$w 변수가 비어있거나 w인 경우
         $result = $db->query($sql);
         $coNo = $db->insert_id;
         $sql = 'update comment set com_order = com_id where com_id = ' . $coNo;
+        ?>
+        <script>
+            history.back();
+        </script>
+        <?php
     }
 } else if($w === 'u') { //작성
     $msg = '수정';
@@ -40,8 +45,8 @@ if(empty($w) || $w === 'w') { //$w 변수가 비어있거나 w인 경우
     if(empty($row['cnt'])) { //맞는 결과가 없을 경우 종료
         ?>
         <script>
-            alert('수정에 실패했습니다..');
-            history.back();
+            // alert('수정에 실패했습니다..');
+            document.location.href='./board_view.php?bNO='<?php echo $bNO ?>;
         </script>
         <?php
         exit;
@@ -55,7 +60,7 @@ if(empty($w) || $w === 'w') { //$w 변수가 비어있거나 w인 경우
     if(empty($row['cnt'])) { //맞는 결과가 없을 경우 종료
         ?>
         <script>
-            alert('삭제에 실패했습니다.');
+            // alert('삭제에 실패했습니다.');
             history.back();
         </script>
         <?php
@@ -65,7 +70,7 @@ if(empty($w) || $w === 'w') { //$w 변수가 비어있거나 w인 경우
 } else {
     ?>
     <script>
-        alert('정상적인 경로를 이용해주세요.');
+        // alert('정상적인 경로를 이용해주세요.');
         history.back();
     </script>
     <?php
@@ -75,14 +80,14 @@ $result = $db->query($sql);
 if($result) {
     ?>
     <script>
-        alert('댓글이 정상적으로 <?php echo $msg?>되었습니다.');
-        location.replace("./board_view.php?bNO=<?php echo $bNO?>");
+        // alert('수정에 실패했습니다..');
+        document.location.href='./board_view.php?bNO='<?php echo $bNO ?>;
     </script>
     <?php
 } else {
     ?>
     <script>
-        alert('댓글 <?php echo $msg?>에 실패했습니다.');
+        //alert('댓글 <?php //echo $msg?>//에 실패했습니다.');
         history.back();
     </script>
     <?php

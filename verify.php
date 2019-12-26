@@ -26,6 +26,7 @@ if(isset($_GET['email']) && !empty($_GET['email']) AND isset($_GET['hash']) && !
             $sql = "UPDATE member SET mem_certified='Y' WHERE mem_email='$email'";
             if($db->query($sql)){
 //                echo "계정 활성화 성공";
+                echo "<script>alert('인증 성공')</script>";
                 echo "<script>document.location.href='index.html'</script>";
             } else {
                 echo "계정 활성화 실패<br>";

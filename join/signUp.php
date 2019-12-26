@@ -39,7 +39,6 @@
                 console.log(data.zonecode);
                 console.log(fullRoadAddr);
 
-
                 // $("[name=addr1]").val(data.zonecode);
                 // $("[name=addr2]").val(fullRoadAddr);
 
@@ -73,7 +72,7 @@
         <h3>회원 가입</h3>
         <table>
             <tr>
-                <td class="col">아이디</td>
+                <td class="col">아이디 *</td>
                 <td >
                     <input type="text" size="20" id="id" name="id">
                     <input type="button" value="중복 검사" onclick="idcheck();">
