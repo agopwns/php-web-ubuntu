@@ -45,6 +45,40 @@ if(!empty($bNO) && empty($_COOKIE['board_view' . $bNO])) {
             }
         }
 
+        function recommendBoard(board_id){
+
+            $.ajax({
+                url:"./recommend_update.php",
+                type:"GET",
+                data:{board_id:board_id},
+                datatype:"html",
+                success:function(data){
+                    // 성공시 html 영역 바꿔주기
+                    var recCount = document.getElementById("recommendCount").innerText;
+                    var recInt = parseInt(recCount);
+                    if(data == "increase"){
+                        recInt++;
+                    } else if (data == "decrease"){
+                        recInt--;
+                    } else if (data == 'insert fail'){
+                        alert("추천 업데이트 실패");
+                    } else if (data == 'session fail'){
+                        alert("로그인 후 이용해주세요.");
+                    } else {
+                        alert("다른 사유");
+                    }
+
+                    document.getElementById("recommendCount").innerText = String(recInt);
+                    //document.location.href='../board/board_view.php?bNO=' + board_id;
+                }
+            });
+        }
+
+        function reportBoard(board_id){
+
+        }
+
+
     </script>
 
 </head>
@@ -85,16 +119,18 @@ if(!empty($bNO) && empty($_COOKIE['board_view' . $bNO])) {
                     echo "<div class='info-child'>작성자 $userid</div>";
                     echo "<div class='info-child'>조회수 $viewCount</div>";
                     echo "<div class='info-child'>등록 시간 $regtime</div>";
-                    echo "<div class='info-child'>추천 $recommend_count</div>";
-                    echo "<div class='info-child'>신고 $report_count</div>";
+                    echo "<div class='info-child' style='display: flex'><div style='margin-right: 10px;'>추천</div><div id='recommendCount'>$recommend_count</div></div>";
+                    echo "<div class='info-child' style='display: flex'><div style='margin-right: 10px;'>신고</div><div id='reportCount'>$report_count</div></div>";
                     echo "</div>";
                     echo "<div class='content-container' style='min-height: 400px; border-bottom: 1px solid white; border-top: 1px solid white'>";
                     echo "<div style='padding-top: 10px;'>$content</div>";
                     echo "</div>";
                     echo "<div class='control-container'>";
+                    echo "<div class='control-child'><button style='color:#fff;' onclick='recommendBoard($bNO)'>추천</button></div>";
+                    echo "<div class='control-child'><button style='color:#fff;' onclick='reportBoard($bNO)'>신고</button></div>";
 
-                    if($session_id == $userId){
-                        echo "<div class='control-child'><button style='color:#fff;' onclick='modifyBoard($bNO)'>수정</a></div>";
+                    if($session_userid == $userid){
+                        echo "<div class='control-child'><button style='color:#fff;' onclick='modifyBoard($bNO)'>수정</button></div>";
                         echo "<div class='control-child'><button style='color:#fff;' onclick='deleteConfirm($bNO)'>삭제</button></div>";
                     }
                     echo "</div>";
@@ -157,7 +193,7 @@ if(!empty($bNO) && empty($_COOKIE['board_view' . $bNO])) {
                     </div>
                     <form action="comment_insert.php" method="post">
                         <input type="hidden" name="bNO" value="<?php echo $bNO?>">
-                        <input type="hidden" name="coId" value="<?php echo $userid?>">
+                        <input type="hidden" name="coId" value="<?php echo $session_userid?>">
                         <table style="margin-top: 20px;">
                             <tbody>
                             <tr>
