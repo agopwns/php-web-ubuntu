@@ -46,7 +46,6 @@ if(!empty($bNO) && empty($_COOKIE['board_view' . $bNO])) {
         }
 
         function recommendBoard(board_id){
-
             $.ajax({
                 url:"./recommend_update.php",
                 type:"GET",
@@ -67,15 +66,35 @@ if(!empty($bNO) && empty($_COOKIE['board_view' . $bNO])) {
                     } else {
                         alert("다른 사유");
                     }
-
                     document.getElementById("recommendCount").innerText = String(recInt);
-                    //document.location.href='../board/board_view.php?bNO=' + board_id;
                 }
             });
         }
 
         function reportBoard(board_id){
-
+            $.ajax({
+                url:"./report_update.php",
+                type:"GET",
+                data:{board_id:board_id},
+                datatype:"html",
+                success:function(data){
+                    // 성공시 html 영역 바꿔주기
+                    var recCount = document.getElementById("reportCount").innerText;
+                    var recInt = parseInt(recCount);
+                    if(data == "increase"){
+                        recInt++;
+                    } else if (data == "decrease"){
+                        recInt--;
+                    } else if (data == 'insert fail'){
+                        alert("추천 업데이트 실패");
+                    } else if (data == 'session fail'){
+                        alert("로그인 후 이용해주세요.");
+                    } else {
+                        alert("다른 사유");
+                    }
+                    document.getElementById("reportCount").innerText = String(recInt);
+                }
+            });
         }
 
 
