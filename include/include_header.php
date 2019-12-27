@@ -97,7 +97,7 @@
                 <li><a href="../board/board_list.php?bName=만화">만화</a></li>
                 <li><a href="../board/board_list.php?bName=연예">연예</a></li>
                 <li><a href="../board/board_list.php?bName=여행">여행</a></li>
-                <li><a href="../board/board_list.php?bName=사진">사진</a></li>
+                <li><a href="../board/img_board_list.php?bName=사진">사진</a></li>
                 <li><a href="../board/board_list.php?bName=음식">음식</a></li>
                 <li><a href="../board/board_list.php?bName=동물">동물</a></li>
                 <li><a href="../board/board_list.php?bName=가수">가수</a></li>

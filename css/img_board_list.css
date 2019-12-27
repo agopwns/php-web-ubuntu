@@ -1,0 +1,128 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: #292929;
+}
+
+/* Main Styling */
+html, body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.7em;
+}
+
+a {
+  color: #292929;
+  text-decoration: none;
+}
+
+h1, h2, h3 {
+  padding-bottom: 20px;
+}
+
+p {
+  margin: 10px 0;
+}
+
+
+/* navMonthBest, navWeekBest */
+#navBoardList {
+  overflow: auto;
+  margin-top: 40px;
+  margin-left: 40px;
+  margin-bottom: 70px;
+}
+
+#navBoardList div {
+  /* margin-bottom: 20px; */
+  /* display: block; */
+}
+
+#navBoardList h2, h3, ul, ul a{
+  color: #fff;
+  list-style-type: none;
+}
+
+
+
+#navBoardList ul li a{
+  font-size: 20px;
+}
+
+#navBoardList ul li a:hover,
+#navBoardList ul li a.current {
+  background: #444;
+  color: #f7c08a;
+}
+
+#inputId, #inputPassword {
+  width: 100px;
+  margin-top: 25px;
+  margin-left: 20px;
+}
+
+
+/* Utility Classes */
+.parent-container{
+margin-bottom: 40px;
+}
+
+.container {
+  margin: auto;
+  max-width: 1100px;
+  overflow: auto;
+  padding: 0 20px;
+}
+
+.menubar-container {
+  margin: auto;
+  max-width: 1100px;
+  overflow: auto;
+  padding: 0 20px;
+}
+
+.boardList-container {
+  margin: auto;
+  max-width: 1150px;
+  overflow: auto;
+  padding: 0 20px;
+}
+
+.boardList-container table th, td{
+  border-bottom: 1px solid white;
+}
+
+#boardTable table {
+  border-bottom: 1px solid white;
+  color: #fff;
+  border-collapse:collapse;
+}
+
+#boardTable tr th, tr td{
+  border-bottom: 1px solid white;
+  color: #fff;
+  border-collapse:collapse;
+}
+
+.table-div {
+  display:flex;
+}
+
+.text-primary {
+  color: #f7c08a;
+}
+
+#boardTable tbody tr, tbody td:hover,
+#boardTable tbody tr, tbody td.current {
+  background: #444;
+  color: #f7c08a;
+}
+
+.paging {
+  margin-top: 10px;
+}
+
+.paging ul li{
+  font-size: 15px;
+}
