@@ -1,6 +1,7 @@
 <?php
     session_start();
     $db = include('../dbconnect.php');
+
 // 게시판 카테고리명 가져오기
 $board_name = $_GET['bName'];
 $board_name = str_replace('%20' , '', $board_name);
@@ -13,7 +14,6 @@ if(isset($_GET['page'])) {
 } else {
     $page = 1;
 }
-
 /* 검색 시작 */
 if(isset($_GET['searchColumn'])) {
     $searchColumn = $_GET['searchColumn'];
@@ -32,11 +32,19 @@ if(isset($searchColumn) && isset($searchText)) {
 }
 /* 검색 끝 */
 
+
+$notiAllPost = 0;
 // default는 모든 게시판 기준이지만 최근 게시글을 제외하면 검색어나 로직을 추가해줘야함
-if($board_name != '최근글')
-    $sql = "select count(*) as cnt from board WHERE board_category='$board_name' $searchSql order by board_id desc";
+if($board_name != '최근글'){
+    $notiSql = "select  count(*) as cnt  from board where board_category='$board_name' AND board_super='Y' ORDER BY board_id DESC";
+    $notiResult = $db->query($notiSql);
+    $notiRow = $notiResult->fetch_assoc();
+    $notiAllPost = $notiRow['cnt'];
+
+    $sql = "select count(*) as cnt from board WHERE board_category='$board_name' AND board_super='N' $searchSql order by board_id desc";
+}
 else
-    $sql = "select count(*) as cnt from board $searchSqlWhere order by board_id desc";
+    $sql = "select count(*) as cnt from board WHERE board_super='N' $searchSql order by board_id desc";
 //echo $sql."<br>";//xptmxm
 
 $result = $db->query($sql);
@@ -49,7 +57,7 @@ if(empty($allPost)) {
     $emptyData = '<tr><td class="textCenter" colspan="5">글이 존재하지 않습니다.</td></tr>';
 } else {
 
-    $onePage = 20; // 한 페이지에 보여줄 게시글의 수.
+    $onePage = 14 - $notiAllPost; // 한 페이지에 보여줄 게시글의 수.
     $allPage = ceil($allPost / $onePage); //전체 페이지의 수
 
     if ($page < 1 || ($allPage && $page > $allPage)) {
@@ -105,15 +113,19 @@ if(empty($allPost)) {
     $currentLimit = ($onePage * $page) - $onePage; //몇 번째의 글부터 가져오는지
     $sqlLimit = ' limit ' . $currentLimit . ', ' . $onePage; //limit sql 구문
     if ($board_name == '최근글'){
-        $sql = 'select * from board ' . $searchSqlWhere . ' order by board_id desc' . $sqlLimit;
+        $sql = "select * from board WHERE board_super='N' $searchSql order by board_id desc" . $sqlLimit;
 //        echo $sql."<br>";//xptmxm
     }
     else{
-        $sql = "select * from board where board_category='$board_name' $searchSql order by board_id desc" . $sqlLimit; //원하는 개수만큼 가져온다. (0번째부터 20번째까지
+        $sql = "select * from board where board_category='$board_name' AND board_super='N' $searchSql order by board_id desc" . $sqlLimit; //원하는 개수만큼 가져온다. (0번째부터 20번째까지
 //        echo $sql."<br>";//xptmxm
     }
 
     $result = $db->query($sql);
+
+    // 해당 게시판 공지글 검색
+    $notiSql = "select * from board where board_category='$board_name' AND board_super='Y' ORDER BY board_id DESC";
+    $notiResult = $db->query($notiSql);
 }
 ?>
 <!DOCTYPE html>
@@ -194,16 +206,63 @@ if(empty($allPost)) {
                 <tbody>
                 <?php
                 // 여기서 게시판에 따라 검색을 나눈다.
-                // 공지 게시판들은 분기문을 따로 설정해줘야 하며
-                $currentLimit = ($onePage * $page) - $onePage; //몇 번째의 글부터 가져오는지
-                $sqlLimit = ' limit ' . $currentLimit . ', ' . $onePage; //limit sql 구문
-//                if($board_name == '최근글')
-//                    $sql = 'select * from board order by board_id desc' . $sqlLimit;
-//                else
-//                    $sql = "select * from board where board_category='$board_name' order by board_id desc" . $sqlLimit; //원하는 개수만큼 가져온다. (0번째부터 20번째까지
-////                echo $sql."<br>";
-//                $result = $db->query($sql);
+                // 공지 게시판들은 분기문을 따로 설정
+                // ==================================== 공지 글
+                if ($notiResult->num_rows > 0) {
+                    while ($row = $notiResult->fetch_assoc()) {
+                        $bNO = $row['board_id'];
+//                        echo $bNO;
+                        $bStatus = $row['board_status'];
+                        $bRecommendCount = $row['board_recommend_count'];
+                        $bRegTime = $row['board_regtime']; // 작성 시간 분 단위까지
+                        $dateResult = (strtotime(date('Y-m-d H:i:s')) - strtotime($bRegTime)) / 3600;
+                        $dateResult = (int) $dateResult;
+//                        echo $dateResult;
 
+                        $date = strtotime($bRegTime);
+                        $bRegTime = date('Y-m-d H:i', $date);
+//                            $bRegTime = $bRegTime->format('Y-m-d H:i');
+                        $bTitle = $row['board_title'];
+                        // 새 글 표시
+                        if($dateResult < 24){
+
+                            $bTitle = $bTitle . " " . "new";
+                        }
+
+                        $bUserId = $row['board_userid'];
+                        $bCategory = $row['board_category'];
+                        echo "<tr style='height: 60px' onClick='location.href=\"./board_view.php?bNO=" . $bNO . "&bName=" . $bName . "\"' style='cursor:pointer'>";
+                        if ($bStatus == 'D') {
+                            // 삭제된 게시물
+                            echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='hit'>$bRecommendCount</td>";
+                            echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='hit'>$bCategory</td>";
+                            echo "<td style='border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='title'>삭제된 게시물입니다.</td>";
+                            echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='author'>$bRegTime</td>";
+                            echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='date'>$bUserId</td>";
+
+                        } else if ($bStatus == 'B') {
+                            // 블라인드 처리된 게시물
+                            echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='hit'>$bRecommendCount</td>";
+                            echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='hit'>$bCategory</td>";
+                            echo "<td style='border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='title'>블라인드 처리된 게시물입니다.</td>";
+                            echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='author'>$bRegTime</td>";
+                            echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='date'>$bUserId</td>";
+                        } else {
+                            // 정상 게시물
+                            echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='hit'>$bRecommendCount</td>";
+                            echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='hit'>$bCategory</td>";
+                            if($bRegTime)
+                            echo "<td style='border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='title'>$bTitle</td>";
+                            echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='author'>$bRegTime</td>";
+                            echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='date'>$bUserId</td>";
+                        }
+                        ?>
+                        </tr>
+                        <?php
+                    }
+                }
+
+                // ==================================== 일반 글
                 if ($result->num_rows > 0) {
                     if (isset($emptyData)) {
 
@@ -215,12 +274,24 @@ if(empty($allPost)) {
 //                        echo $bNO;
                             $bStatus = $row['board_status'];
                             $bRecommendCount = $row['board_recommend_count'];
-                            $bTitle = $row['board_title'];
                             $bRegTime = $row['board_regtime']; // 작성 시간 분 단위까지
+                            $dateResult = (strtotime(date('Y-m-d H:i:s')) - strtotime($bRegTime)) / 3600;
+                            $dateResult = (int) $dateResult;
+//                            echo $dateResult;
+                            $bTitle = $row['board_title'];
+                            // 댓글 개수
+                            $bReplyCount = $row['board_reply_count'];
+                            $bReplyCount = "[ $bReplyCount ]";
+                            $bTitle = $bTitle . " " . $bReplyCount;
 
                             $date = strtotime($bRegTime);
                             $bRegTime = date('Y-m-d H:i', $date);
 //                            $bRegTime = $bRegTime->format('Y-m-d H:i');
+
+                            // 새 글 표시
+                            if($dateResult < 24){
+                                $bTitle = $bTitle . " " . "new";
+                            }
 
                             $bUserId = $row['board_userid'];
                             $bCategory = $row['board_category'];

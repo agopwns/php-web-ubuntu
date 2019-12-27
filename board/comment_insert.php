@@ -1,8 +1,8 @@
 <?php
 session_start();
-echo "db 연결 전<br>";
+//echo "db 연결 전<br>";
 include("../dbconnect.php");
-echo "db 연결 후<br>";
+//echo "db 연결 후<br>";
 
 $w = '';
 $coNo = 'null';
@@ -78,6 +78,13 @@ if(empty($w) || $w === 'w') { //$w 변수가 비어있거나 w인 경우
 }
 $result = $db->query($sql);
 if($result) {
+    if($w == 'd'){
+        $sql = 'update board set board_reply_count = board_reply_count - 1 where board_id = ' . $bNO;
+        $result = $db->query($sql);
+    } else {
+        $sql = 'update board set board_reply_count = board_reply_count + 1 where board_id = ' . $bNO;
+        $result = $db->query($sql);
+    }
     ?>
     <script>
         // alert('수정에 실패했습니다..');

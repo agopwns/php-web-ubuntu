@@ -9,6 +9,8 @@ if(isset($_SESSION['user_id'])) {
     // 세션 존재할 때만 글 입력 처리
     $user_id = $_SESSION['user_id'];
     echo $user_id."<br>";
+    $user_permission =  $_SESSION['user_permission'];
+    echo $user_permission."<br>";
     $bTitle = $_POST['bTitle'];
     echo $bTitle."<br>";
     $bContent = $_POST['bContent'];
@@ -21,9 +23,17 @@ if(isset($_SESSION['user_id'])) {
     // 게시판 카테고리
     $bCategory = $_POST['bBoard_name'];
     echo $bCategory."<br>";
+    $bPermission = "";
 
-    $sql = "insert into board (board_userid, board_title, board_content, board_regtime, board_category, board_type)";
-    $sql = $sql. "values('$user_id', '$bTitle', '$bContent', '$bRegTime','$bCategory','$bType')";
+    if($user_permission == 'N'){
+        // 일반 유저일 경우
+        $bPermission = 'N';
+    } else {
+        // 운영자일 경우
+        $bPermission = 'Y';
+    }
+    $sql = "insert into board (board_userid, board_title, board_content, board_regtime, board_category, board_type, board_super)";
+    $sql = $sql. "values('$user_id', '$bTitle', '$bContent', '$bRegTime','$bCategory','$bType','$bPermission')";
     $result = $db->query($sql);
 
     if($result) { // query가 정상실행 되었다면,
