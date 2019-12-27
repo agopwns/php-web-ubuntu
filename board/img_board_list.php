@@ -136,13 +136,28 @@ $board_name = str_replace('%20' , '', $board_name);
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="description" content="Welcome to the best Community">
     <meta name="keywords" content="Peanut Community">
-    <link rel="stylesheet" href="../css/board_list.css">
+    <link rel="stylesheet" href="../css/img_board_list.css">
     <title>Peanut Community</title>
     <script src="//code.jquery.com/jquery.min.js"></script>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript">
-        // $(document).ready( function() {
-        //     $("#headers").load("../include/include_header.php");  // 원하는 파일 경로를 삽입하면 된다
-        // });
+        $(document).ready(function(){
+            $(".fancybox").fancybox({
+                openEffect: "none",
+                closeEffect: "none"
+            });
+
+            $(".zoom").hover(function(){
+
+                $(this).addClass('transition');
+            }, function(){
+
+                $(this).removeClass('transition');
+            });
+        });
+
     </script>
 
 </head>
@@ -150,191 +165,83 @@ $board_name = str_replace('%20' , '', $board_name);
 <div class="parent_container">
     <div id="headers"><?php include '../include/include_header.php'?></div>
 
-    <nav id="navBoardList">
-        <div class="boardList-container">
+    <!-- Page Content -->
+    <div class="container page-top">
+        <h4 style="color:#fff; margin-bottom: 40px">사진 게시판</h4>
+        <div class="row">
 
-            <table id = "boardTable" style=" width:95%;">
-                <div class="table-div" style="display: flex; margin-bottom: 40px;">
-                    <div class="table-div-child" style=" width: 780px;">
-                    <?php
-                        $board_name = $_GET['bName'];
-                        $bName = str_replace('%20' , '', $board_name);
-//                        echo $bName;
-                        echo "<a href='board_list.php?bName=$board_name' class='readHide' style='color:white; font-size: 20px; font-weight: bold; margin-bottom: 40px;'>$bName 게시판</a>";
-                        echo "</div>";
-                        echo "<div class='table-div-child' style='width: 300px; float:right'>";
-                        ?>
-                        <div class="searchBox">
-                            <form action="./board_list.php" method="get" >
-                                <?php echo '<input type="hidden" name="bName" value="' . $bName . '">' ?>
-                                <select name="searchColumn" style="color:#fff;">
-                                    <option <?php echo $searchColumn=='board_title'?'selected="selected"':null?> value="board_title">제목</option>
-                                    <option <?php echo $searchColumn=='board_content'?'selected="selected"':null?> value="board_content">내용</option>
-                                    <option <?php echo $searchColumn=='board_userid'?'selected="selected"':null?> value="board_userid">작성자</option>
-                                </select>
-                                <input type="text" name="searchText" value="<?php echo isset($searchText)?$searchText:null?>" style="color:#fff;  width: 120px;">
-                                <button type="submit" style="color:#fff">검색</button>
-                            </form>
-                            <?php
-                            //                        echo "<input type='text' style='color:#fff; width:100px; margin-left: 10px;'/>";
-                            //                        echo "<input type='button' style='color:#fff; margin-left: 10px;' value='검색'/>";
-                            echo "<a href='board_write.php?bName=$bName'>";
-                            if(isset($_SESSION['user_id'])) {
-                                if($bName != '최근글' && $bName != '공지'){
-                                    echo "<input type='button' style='color:#fff;' value='글쓰기'/>";
-                                }
-                            }
-                            echo "</a>";
-                            ?>
-                        </div>
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                <a href="https://images.pexels.com/photos/62307/air-bubbles-diving-underwater-blow-62307.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" class="fancybox" rel="ligthbox">
+                    <img  src="https://images.pexels.com/photos/62307/air-bubbles-diving-underwater-blow-62307.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" class="zoom img-fluid "  alt="">
 
-                        <div class="paging">
-                            <?php echo $paging ?>
-                        </div>
-                    </div>
-                </div>
+                </a>
+            </div>
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                <a href="https://images.pexels.com/photos/38238/maldives-ile-beach-sun-38238.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"  class="fancybox" rel="ligthbox">
+                    <img  src="https://images.pexels.com/photos/38238/maldives-ile-beach-sun-38238.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" class="zoom img-fluid"  alt="">
+                </a>
+            </div>
 
-                <thead>
-                <tr style="height: 40px;">
-                    <th scope="col" class="no" style="width:7%; border-bottom: 1px solid white; color:white;">추천</th>
-                    <th scope="col" class="category" style="width:10%; border-bottom: 1px solid white; color:white;">카테고리</th>
-                    <th scope="col" class="title" style="width:55%; border-bottom: 1px solid white; color:white;">제목</th>
-                    <th scope="col" class="author" style="width:20%; border-bottom: 1px solid white; color:white;">작성시간</th>
-                    <th scope="col" class="date" style="width:15%; border-bottom: 1px solid white; color:white;">작성자</th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php
-                // 여기서 게시판에 따라 검색을 나눈다.
-                // 공지 게시판들은 분기문을 따로 설정
-                // ==================================== 공지 글
-                if ($notiResult->num_rows > 0) {
-                    while ($row = $notiResult->fetch_assoc()) {
-                        $bNO = $row['board_id'];
-//                        echo $bNO;
-                        $bStatus = $row['board_status'];
-                        $bRecommendCount = $row['board_recommend_count'];
-                        $bRegTime = $row['board_regtime']; // 작성 시간 분 단위까지
-                        $dateResult = (strtotime(date('Y-m-d H:i:s')) - strtotime($bRegTime)) / 3600;
-                        $dateResult = (int) $dateResult;
-//                        echo $dateResult;
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                <a href="https://images.pexels.com/photos/158827/field-corn-air-frisch-158827.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" class="fancybox" rel="ligthbox">
+                    <img  src="https://images.pexels.com/photos/158827/field-corn-air-frisch-158827.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" class="zoom img-fluid "  alt="">
+                </a>
+            </div>
 
-                        $date = strtotime($bRegTime);
-                        $bRegTime = date('Y-m-d H:i', $date);
-//                            $bRegTime = $bRegTime->format('Y-m-d H:i');
-                        $bTitle = $row['board_title'];
-                        // 새 글 표시
-                        if($dateResult < 24){
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                <a href="https://images.pexels.com/photos/302804/pexels-photo-302804.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" class="fancybox" rel="ligthbox">
+                    <img  src="https://images.pexels.com/photos/302804/pexels-photo-302804.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" class="zoom img-fluid "  alt="">
+                </a>
+            </div>
 
-                            $bTitle = $bTitle . " " . "new";
-                        }
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                <a href="https://images.pexels.com/photos/1038914/pexels-photo-1038914.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" class="fancybox" rel="ligthbox">
+                    <img  src="https://images.pexels.com/photos/1038914/pexels-photo-1038914.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" class="zoom img-fluid "  alt="">
+                </a>
+            </div>
 
-                        $bUserId = $row['board_userid'];
-                        $bCategory = $row['board_category'];
-                        echo "<tr style='height: 60px' onClick='location.href=\"./board_view.php?bNO=" . $bNO . "&bName=" . $bName . "\"' style='cursor:pointer'>";
-                        if ($bStatus == 'D') {
-                            // 삭제된 게시물
-                            echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='hit'>$bRecommendCount</td>";
-                            echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='hit'>$bCategory</td>";
-                            echo "<td style='border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='title'>삭제된 게시물입니다.</td>";
-                            echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='author'>$bRegTime</td>";
-                            echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='date'>$bUserId</td>";
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                <a href="https://images.pexels.com/photos/414645/pexels-photo-414645.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" class="fancybox" rel="ligthbox">
+                    <img  src="https://images.pexels.com/photos/414645/pexels-photo-414645.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" class="zoom img-fluid "  alt="">
+                </a>
+            </div>
 
-                        } else if ($bStatus == 'B') {
-                            // 블라인드 처리된 게시물
-                            echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='hit'>$bRecommendCount</td>";
-                            echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='hit'>$bCategory</td>";
-                            echo "<td style='border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='title'>블라인드 처리된 게시물입니다.</td>";
-                            echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='author'>$bRegTime</td>";
-                            echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='date'>$bUserId</td>";
-                        } else {
-                            // 정상 게시물
-                            echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='hit'>$bRecommendCount</td>";
-                            echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='hit'>$bCategory</td>";
-                            if($bRegTime)
-                            echo "<td style='border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='title'>$bTitle</td>";
-                            echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='author'>$bRegTime</td>";
-                            echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='date'>$bUserId</td>";
-                        }
-                        ?>
-                        </tr>
-                        <?php
-                    }
-                }
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                <a href="https://images.pexels.com/photos/56005/fiji-beach-sand-palm-trees-56005.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" class="fancybox" rel="ligthbox">
+                    <img  src="https://images.pexels.com/photos/56005/fiji-beach-sand-palm-trees-56005.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" class="zoom img-fluid "  alt="">
+                </a>
+            </div>
 
-                // ==================================== 일반 글
-                if ($result->num_rows > 0) {
-                    if (isset($emptyData)) {
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                <a href="https://images.pexels.com/photos/1038002/pexels-photo-1038002.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" class="fancybox" rel="ligthbox">
+                    <img  src="https://images.pexels.com/photos/1038002/pexels-photo-1038002.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" class="zoom img-fluid "  alt="">
+                </a>
+            </div><div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                <a href="https://images.pexels.com/photos/62307/air-bubbles-diving-underwater-blow-62307.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" class="fancybox" rel="ligthbox">
+                    <img  src="https://images.pexels.com/photos/62307/air-bubbles-diving-underwater-blow-62307.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" class="zoom img-fluid "  alt="">
 
-                        echo $emptyData;
+                </a>
+            </div>
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                <a href="https://images.pexels.com/photos/38238/maldives-ile-beach-sun-38238.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"  class="fancybox" rel="ligthbox">
+                    <img  src="https://images.pexels.com/photos/38238/maldives-ile-beach-sun-38238.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" class="zoom img-fluid"  alt="">
+                </a>
+            </div>
 
-                    } else {
-                        while ($row = $result->fetch_assoc()) {
-                            $bNO = $row['board_id'];
-//                        echo $bNO;
-                            $bStatus = $row['board_status'];
-                            $bRecommendCount = $row['board_recommend_count'];
-                            $bRegTime = $row['board_regtime']; // 작성 시간 분 단위까지
-                            $dateResult = (strtotime(date('Y-m-d H:i:s')) - strtotime($bRegTime)) / 3600;
-                            $dateResult = (int) $dateResult;
-//                            echo $dateResult;
-                            $bTitle = $row['board_title'];
-                            // 댓글 개수
-                            $bReplyCount = $row['board_reply_count'];
-                            $bReplyCount = "[ $bReplyCount ]";
-                            $bTitle = $bTitle . " " . $bReplyCount;
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                <a href="https://images.pexels.com/photos/158827/field-corn-air-frisch-158827.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" class="fancybox" rel="ligthbox">
+                    <img  src="https://images.pexels.com/photos/158827/field-corn-air-frisch-158827.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" class="zoom img-fluid "  alt="">
+                </a>
+            </div>
 
-                            $date = strtotime($bRegTime);
-                            $bRegTime = date('Y-m-d H:i', $date);
-//                            $bRegTime = $bRegTime->format('Y-m-d H:i');
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                <a href="https://images.pexels.com/photos/302804/pexels-photo-302804.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" class="fancybox" rel="ligthbox">
+                    <img  src="https://images.pexels.com/photos/302804/pexels-photo-302804.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" class="zoom img-fluid "  alt="">
+                </a>
+            </div>
 
-                            // 새 글 표시
-                            if($dateResult < 24){
-                                $bTitle = $bTitle . " " . "new";
-                            }
-
-                            $bUserId = $row['board_userid'];
-                            $bCategory = $row['board_category'];
-                            echo "<tr style='height: 60px' onClick='location.href=\"./board_view.php?bNO=" . $bNO . "&bName=" . $bName . "\"' style='cursor:pointer'>";
-                            if ($bStatus == 'D') {
-                                // 삭제된 게시물
-                                echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='hit'>$bRecommendCount</td>";
-                                echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='hit'>$bCategory</td>";
-                                echo "<td style='border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='title'>삭제된 게시물입니다.</td>";
-                                echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='author'>$bRegTime</td>";
-                                echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='date'>$bUserId</td>";
-
-                            } else if ($bStatus == 'B') {
-                                // 블라인드 처리된 게시물
-                                echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='hit'>$bRecommendCount</td>";
-                                echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='hit'>$bCategory</td>";
-                                echo "<td style='border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='title'>블라인드 처리된 게시물입니다.</td>";
-                                echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='author'>$bRegTime</td>";
-                                echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='date'>$bUserId</td>";
-                            } else {
-                                // 정상 게시물
-                                echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='hit'>$bRecommendCount</td>";
-                                echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='hit'>$bCategory</td>";
-                                echo "<td style='border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='title'>$bTitle</td>";
-                                echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='author'>$bRegTime</td>";
-                                echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='date'>$bUserId</td>";
-                            }
-                            ?>
-                            </tr>
-                            <?php
-                        }
-                    }
-                }
-                   ?>
-
-                </tbody>
-            </table>
-
-            
         </div>
-    </nav>
-
-</div>    
+</div>
 
 
 </body>

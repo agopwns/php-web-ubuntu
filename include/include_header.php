@@ -48,9 +48,9 @@
 <body>
 <div class="parent_container">
     <nav id="navbar">
-        <div style="position: fixed; bottom: 600px; right: 130px;">
-            <a href="#">TOP</a>
-        </div>
+<!--        <div style="position: fixed; bottom: 600px; right: 130px;">-->
+<!--            <a href="#">TOP</a>-->
+<!--        </div>-->
         <div class="container">
             <h1 class="logo"><a href="../index.html">Peanut Community</a></h1>
             <ul>
