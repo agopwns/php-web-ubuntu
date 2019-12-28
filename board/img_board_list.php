@@ -58,7 +58,7 @@ if(empty($allPost)) {
     $emptyData = '<tr><td class="textCenter" colspan="5">글이 존재하지 않습니다.</td></tr>';
 } else {
 
-    $onePage = 14 - $notiAllPost; // 한 페이지에 보여줄 게시글의 수.
+    $onePage = 9 - $notiAllPost; // 한 페이지에 보여줄 게시글의 수.
     $allPage = ceil($allPost / $onePage); //전체 페이지의 수
 
     if ($page < 1 || ($allPage && $page > $allPage)) {
@@ -85,27 +85,27 @@ if(empty($allPost)) {
     $paging = '<ul>'; // 페이징을 저장할 변수
 //첫 페이지가 아니라면 처음 버튼을 생성
     if ($page != 1) {
-        $paging .= '<li style="float:left; font-size: 13px; margin-left: 5px;" class="page page_start"><a href="./board_list.php?bName=' . $board_name . '&page=1' . $subString . '" style="font-size: 15px;">처음</a></li>';
+        $paging .= '<li style="float:left; font-size: 13px; margin-left: 5px;" class="page page_start"><a href="./img_board_list.php?bName=' . $board_name . '&page=1' . $subString . '" style="font-size: 15px;">처음</a></li>';
     }
 //첫 섹션이 아니라면 이전 버튼을 생성
     if ($currentSection != 1) {
-        $paging .= '<li style="float:left; font-size: 13px; margin-left: 5px;" class="page page_prev"><a href="./board_list.php?bName=' . $board_name . '&page=' . $prevPage . $subString . '" style="font-size: 15px;">이전</a></li>';
+        $paging .= '<li style="float:left; font-size: 13px; margin-left: 5px;" class="page page_prev"><a href="./img_board_list.php?bName=' . $board_name . '&page=' . $prevPage . $subString . '" style="font-size: 15px;">이전</a></li>';
     }
 
     for ($i = $firstPage; $i <= $lastPage; $i++) {
         if ($i == $page) {
             $paging .= '<li style="float:left; font-weight: bold; font-size: 17px; margin-left: 5px;" class="page current">' . $i . '</li>';
         } else {
-            $paging .= '<li style="float:left; font-size: 13px; margin-left: 5px;" class="page"><a href="./board_list.php?bName=' . $board_name . '&page=' . $i . $subString . '" style="font-size: 17px;">' . $i . '</a></li>';
+            $paging .= '<li style="float:left; font-size: 13px; margin-left: 5px;" class="page"><a href="./img_board_list.php?bName=' . $board_name . '&page=' . $i . $subString . '" style="font-size: 17px;">' . $i . '</a></li>';
         }
     }
 //마지막 섹션이 아니라면 다음 버튼을 생성
     if ($currentSection != $allSection) {
-        $paging .= '<li style="float:left;  margin-left: 5px;" class="page page_next"><a href="./board_list.php?bName=' . $board_name . '&page=' . $nextPage . $subString . '" style="font-size: 15px;">다음</a></li>';
+        $paging .= '<li style="float:left;  margin-left: 5px;" class="page page_next"><a href="./img_board_list.php?bName=' . $board_name . '&page=' . $nextPage . $subString . '" style="font-size: 15px;">다음</a></li>';
     }
 //마지막 페이지가 아니라면 끝 버튼을 생성
     if ($page != $allPage) {
-        $paging .= '<li style="float:left; font-size: 13px; margin-left: 5px;" class="page page_end"><a href="./board_list.php?bName=' . $board_name . '&page=' . $allPage . $subString . '" style="font-size: 15px;">끝</a></li>';
+        $paging .= '<li style="float:left; font-size: 13px; margin-left: 5px;" class="page page_end"><a href="./img_board_list.php?bName=' . $board_name . '&page=' . $allPage . $subString . '" style="font-size: 15px;">끝</a></li>';
     }
     $paging .= '</ul>';
     /* 페이징 끝 */
@@ -145,18 +145,7 @@ if(empty($allPost)) {
 </head>
 <script type="text/javascript">
     $(document).ready(function(){
-        $(".fancybox").fancybox({
-            openEffect: "none",
-            closeEffect: "none"
-        });
 
-        $(".zoom").hover(function(){
-
-            $(this).addClass('transition');
-        }, function(){
-
-            $(this).removeClass('transition');
-        });
     });
 </script>
 <body>
@@ -164,12 +153,45 @@ if(empty($allPost)) {
     <div id="headers"><?php include '../include/include_header.php'?></div>
 
     <!-- Page Content -->
-    <div class="container page-top">
-        <div>
-            <h4 style="color:#fff; margin-bottom: 40px">사진 게시판</h4>
-            <a href='./img_board_write.php?bName=사진'><input type="button" value="글쓰기"></a>
+    <div class="container page-top" style="margin-top: 40px">
+        <div class="table-div" style="display: flex; margin-bottom: 20px;">
+            <div class="table-div-child" style=" width: 780px;">
+                <?php
+                $board_name = $_GET['bName'];
+                $bName = str_replace('%20' , '', $board_name);
+                //                        echo $bName;
+                echo "<a href='img_board_list.php?bName=$board_name' class='readHide' style='color:white; font-size: 20px; font-weight: bold; margin-bottom: 40px;'>$bName 게시판</a>";
+                echo "</div>";
+                echo "<div class='table-div-child' style='width: 300px; float:right'>";
+                ?>
+                <div class="searchBox">
+                    <form action="./img_board_list.php" method="get">
+                        <?php echo '<input type="hidden" name="bName" value="' . $bName . '">' ?>
+                        <select name="searchColumn" style="color:#fff;">
+                            <option <?php echo $searchColumn=='board_title'?'selected="selected"':null?> value="board_title">제목</option>
+                            <option <?php echo $searchColumn=='board_content'?'selected="selected"':null?> value="board_content">내용</option>
+                            <option <?php echo $searchColumn=='board_userid'?'selected="selected"':null?> value="board_userid">작성자</option>
+                        </select>
+                        <input type="text" name="searchText" value="<?php echo isset($searchText)?$searchText:null?>" style="color:#fff;  width: 120px;">
+                        <button type="submit" style="color:#fff">검색</button>
+                    </form>
+                    <?php
+                    echo "<a href='img_board_write.php?bName=$bName'>";
+                    if(isset($_SESSION['user_id'])) {
+                        if($bName != '최근글' && $bName != '공지'){
+                            echo "<input type='button' style='color:#fff;' value='글쓰기'/>";
+                        }
+                    }
+                    echo "</a>";
+                    ?>
+                </div>
+
+                <div class="paging">
+                    <?php echo $paging ?>
+                </div>
+            </div>
         </div>
-        <div class="row">
+        <div class="row" style="display: block">
             <?php
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
@@ -192,9 +214,9 @@ if(empty($allPost)) {
                         $bTitle = $bTitle . " " . "new";
                     }
 
-                    echo '<div class="col-lg-3 col-md-4 col-xs-6 thumb" style="width: 300px; height: 230px;">';
+                    echo '<div class="img">';
                     echo '<a href="/board/img_board_view.php?bNO=' . $bNO . '" class="fancybox" rel="ligthbox">';
-                    echo '<img  src="' . $bImgPath . '" class="zoom img-fluid "  alt="" style="width:300px; height:230px;">';
+                    echo '<img  src="' . $bImgPath . '" class="zoom img-fluid "  style="width: 325px; height: 230px;">';
                     echo '</a>';
                     echo '</div>';
 

@@ -230,7 +230,12 @@ if(empty($allPost)) {
 
                         $bUserId = $row['board_userid'];
                         $bCategory = $row['board_category'];
-                        echo "<tr style='height: 60px' onClick='location.href=\"./board_view.php?bNO=" . $bNO . "&bName=" . $bName . "\"' style='cursor:pointer'>";
+                        $bType = $row['board_type'];
+                        if($bType == 'N')
+                            echo "<tr style='height: 60px' onClick='location.href=\"./board_view.php?bNO=" . $bNO . "&bName=" . $bName . "\"' style='cursor:pointer'>";
+                        else if ($bType == 'I')
+                            echo "<tr style='height: 60px' onClick='location.href=\"./img_board_view.php?bNO=" . $bNO . "&bName=" . $bName . "\"' style='cursor:pointer'>";
+
                         if ($bStatus == 'D') {
                             // 삭제된 게시물
                             echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='hit'>$bRecommendCount</td>";
@@ -280,8 +285,11 @@ if(empty($allPost)) {
                             $bTitle = $row['board_title'];
                             // 댓글 개수
                             $bReplyCount = $row['board_reply_count'];
-                            $bReplyCount = "[ $bReplyCount ]";
-                            $bTitle = $bTitle . " " . $bReplyCount;
+
+                            if($bReplyCount > 0){
+                                $bReplyCount = "[ $bReplyCount ]";
+                                $bTitle = $bTitle . " " . $bReplyCount;
+                            }
 
                             $date = strtotime($bRegTime);
                             $bRegTime = date('Y-m-d H:i', $date);
@@ -294,7 +302,14 @@ if(empty($allPost)) {
 
                             $bUserId = $row['board_userid'];
                             $bCategory = $row['board_category'];
-                            echo "<tr style='height: 60px' onClick='location.href=\"./board_view.php?bNO=" . $bNO . "&bName=" . $bName . "\"' style='cursor:pointer'>";
+                            $bType = $row['board_type'];
+                            if($bType == 'N')
+                                echo "<tr style='height: 60px' onClick='location.href=\"./board_view.php?bNO=" . $bNO . "&bName=" . $bName . "\"' style='cursor:pointer'>";
+                            else if ($bType == 'I')
+                                echo "<tr style='height: 60px' onClick='location.href=\"./img_board_view.php?bNO=" . $bNO . "&bName=" . $bName . "\"' style='cursor:pointer'>";
+                            else
+                                echo "<tr style='height: 60px' onClick='location.href=\"./board_view.php?bNO=" . $bNO . "&bName=" . $bName . "\"' style='cursor:pointer'>";
+
                             if ($bStatus == 'D') {
                                 // 삭제된 게시물
                                 echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;' class='hit'>$bRecommendCount</td>";

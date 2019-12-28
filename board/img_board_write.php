@@ -39,6 +39,10 @@
                         <td class="title"><input type="file" name="upload" id="upload"></td>
                     </tr>
                     <tr>
+                        <th></th>
+                        <td style="font-size: 14px;">2MB 이하의 사진만 등록 가능합니다.</td>
+                    </tr>
+                    <tr>
                         <td>
                             <?php
                             $board_name = $_GET['bName'];
