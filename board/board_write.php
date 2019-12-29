@@ -6,14 +6,27 @@
 </head>
 <script src="//code.jquery.com/jquery.min.js"></script>
 <script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
-<script>
+<script type="text/javascript" src="../ckeditor/ckeditor.js"></script>
+<script type="text/javascript">
     function goHome(){
         location.href='../index.html';
+    }
+    function loadPage(){
+        CKEDITOR.replace('bContent');
+    }
+    function FormSubmit(f) {
+        CKEDITOR.instances.contents.updateElement();
+        if(f.contents.value == "") {
+            alert("내용을 입력해 주세요.");
+            return false;
+        }
+        alert(f.contents.value); // 전송은 하지 않습니다.
+        return false;
     }
 
 
 </script>
-<body>
+<body onload="loadPage();">
 <div class="container">
     <article class="boardArticle">
         <div id="boardWrite">
@@ -29,12 +42,12 @@
                 <table id="boardWrite">
                     <tbody>
                     <tr>
-                        <th scope="row"><label for="bTitle">제목</label></th>
+                        <th scope="row" style="width: 50px;"><label for="bTitle">제목</label></th>
                         <td class="title"><input type="text" name="bTitle" id="bTitle"></td>
                     </tr>
                     <tr>
                         <th scope="row"><label for="bContent">내용</label></th>
-                        <td class="content"><textarea name="bContent" id="bContent"></textarea></td>
+                        <td class="content"><textarea name="bContent" id="bContent" style="width: 600px;"></textarea></td>
                     </tr>
                     <tr>
                         <td>

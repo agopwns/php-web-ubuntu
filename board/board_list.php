@@ -224,7 +224,7 @@ if(empty($allPost)) {
 //                            $bRegTime = $bRegTime->format('Y-m-d H:i');
                         $bTitle = $row['board_title'];
                         // 새 글 표시
-                        if($dateResult < 24){
+                        if($dateResult < 12){
                             $bTitle = $bTitle . " " . "new";
                         }
 
@@ -296,7 +296,7 @@ if(empty($allPost)) {
 //                            $bRegTime = $bRegTime->format('Y-m-d H:i');
 
                             // 새 글 표시
-                            if($dateResult < 24){
+                            if($dateResult < 12){
                                 $bTitle = $bTitle . " " . "new";
                             }
 
