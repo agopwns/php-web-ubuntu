@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+    <script src="../node_modules/socket.io-client/dist/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <script>
+        console.log('연결 전');
+        var socket = io.connect(':81');
+        console.log('포트 담은 후');
+
+        // 접속시 실행
+        socket.on('connect', function() {
+            console.log('연결 성공 안');
+            // 이름 입력 받기
+            var name = prompt('반갑습니다. 아이디를 입력해주세요!','');
+            // 이름이 빈 칸인 경우
+            if(!name) {
+                name = '익명';
+            }
+            // 서버에 새 유저가 왔다고 알림
+            socket.emit('newUser', name);
+        });
+
+        // socket.on('notification', function (from,msg) {
+        //
+        //     console.log('notification 안');
+        //     $('#content').append(msg.message + '<br>');
+        //     console.log('notification append 실행 후');
+        //
+        // });
+        socket.on('update', function(data){
+            var chat = document.getElementById('chat');
+
+            var message = document.createElement('div');
+            var node = document.createTextNode(`${data.name}: ${data.message}`);
+            var className = '';
+
+            // 타입에 따라 적용할 클래스를 다르게 지정
+            switch(data.type) {
+                case 'message':
+                    className = 'other';
+                    break;
+
+                case 'connect':
+                    className = 'connect';
+                    break;
+
+                case 'disconnect':
+                    className = 'disconnect';
+                    break;
+            }
+            console.log(data.message);
+            message.classList.add(className);
+            message.appendChild(node);
+            chat.appendChild(message);
+        });
+
+    </script>
+</head>
+<body>
+<section id="content"></section>
+
+<div id="chat">
+    <!-- 채팅 메시지 영역 -->
+</div>
+<div>
+    <input type="text" id="test" style="color:#fff; width: 720px;" placeholder="메시지를 입력해주세요..">
+    <button onclick="send()" style="color:#fff; width: 50px;">전송</button>
+</div>
+</body>
+
+</html>

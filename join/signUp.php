@@ -49,20 +49,18 @@
         }).open();
     }
 
-    function idcheck() {
-
-        var idvalue = $("#id").val();
-
+    function checkID() {
+        var idValue = $("#id").val();
         $.ajax({
                 url:"idcheck.php",
-                    type:"POST",
-                    data:{id:idvalue},
-                    datatype:"html",
-                    success:function(data){
-                        alert(data);
-                    }
-            });
-        }
+                type:"POST",
+                data:{id:idValue},
+                datatype:"html",
+                success:function(data){
+                    alert(data);
+                }
+        });
+    }
 
 </script>
 <body>
@@ -75,7 +73,7 @@
                 <td class="col">아이디 *</td>
                 <td >
                     <input type="text" size="20" id="id" name="id">
-                    <input type="button" value="중복 검사" onclick="idcheck();">
+                    <input type="button" value="중복 검사" onclick="checkID();">
                 </td>
                 <td id="idtd" name="idtd"></td>
             </tr>

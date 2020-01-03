@@ -224,7 +224,8 @@ if(empty($allPost)) {
 //                            $bRegTime = $bRegTime->format('Y-m-d H:i');
                         $bTitle = $row['board_title'];
                         // 새 글 표시
-                        if($dateResult < 12){
+                        if($dateResult < 2){
+//                            echo "시간 차이 : " .$dateResult;
                             $bTitle = $bTitle . " " . "new";
                         }
 
@@ -296,7 +297,8 @@ if(empty($allPost)) {
 //                            $bRegTime = $bRegTime->format('Y-m-d H:i');
 
                             // 새 글 표시
-                            if($dateResult < 12){
+                            if($dateResult < 2){
+//                                echo "시간 차이 : " .$dateResult;
                                 $bTitle = $bTitle . " " . "new";
                             }
 

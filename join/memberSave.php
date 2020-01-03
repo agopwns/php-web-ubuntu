@@ -40,7 +40,7 @@ Peanut Community 회원 가입 감사합니다.
 '.$name.'님.
 ------------------------
 아래 링크를 클릭하면 인증이 완료되며 사이트를 이용할 수 있습니다.
-http://192.168.145.139/verify.php?email='.$email.'&hash='.$hash.'
+http://192.168.145.128/verify.php?email='.$email.'&hash='.$hash.'
 '; // Our message above including the link
 
         $fmail = 'agopwns@naver.com';

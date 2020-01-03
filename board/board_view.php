@@ -98,6 +98,8 @@ if(!empty($bNO) && empty($_COOKIE['board_view' . $bNO])) {
         }
 
 
+
+
     </script>
 
 </head>
@@ -213,6 +215,7 @@ if(!empty($bNO) && empty($_COOKIE['board_view' . $bNO])) {
                     <form action="comment_insert.php" method="post">
                         <input type="hidden" name="bNO" value="<?php echo $bNO?>">
                         <input type="hidden" name="coId" value="<?php echo $session_userid?>">
+                        <input type="hidden" name="boId" value="<?php echo $userid?>">
                         <table style="margin-top: 20px;">
                             <tbody>
                             <tr>
