@@ -148,7 +148,7 @@
     if(id !== '' && id !== null){
         // 81번 포트 알림 전송 서버와 소켓 통신 연결
         console.log('연결 전');
-        socket = io.connect(':81');
+        //socket = io.connect(':443'); // http:81 // https:444
         console.log('포트 담은 후');
 
         socket.on('connect', function() {
@@ -280,6 +280,7 @@
                 <li><a href="../board/board_list.php?bName=DAY BEST">DAY BEST</a></li>
                 <li><a href="../board/board_list.php?bName=공지">공지</a></li>
                 <li><a href="../board/board_list.php?bName=자유">자유</a></li>
+                <li><a href="../board/streaming_list.php">방송</a></li>
                 <li><a href="../board/board_list.php?bName=장터">장터</a></li>
                 <li><a href="../board/board_list.php?bName=문의">문의</a></li>
             </ul>

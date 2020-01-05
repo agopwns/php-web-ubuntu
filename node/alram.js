@@ -1,4 +1,5 @@
 var io = require('socket.io').listen(81);
+
 var clients = [];
 console.log("서버 실행 중");
 io.sockets.on( 'connection', function ( socket ) {
