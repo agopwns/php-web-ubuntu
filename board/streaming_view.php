@@ -1,11 +1,8 @@
 <?php
 session_start();
 $roomid = $_GET['roomid'];
-//echo $roomid;
 $title = $_GET['title'];
-//echo $title;
 $userid = $_SESSION['user_id'];
-//echo $userid;
 
 ?>
 <!DOCTYPE html>
@@ -15,6 +12,10 @@ $userid = $_SESSION['user_id'];
     <title>Peanut Community Streaming</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
     <script src="../RTC/demos/menu.js"></script>
+    <script src="../RTC/node_modules/webrtc-adapter/out/adapter.js"></script>
+<!--    <script src="../RTC/dist/RTCMultiConnection.min.js"></script>-->
+    <script src="../RTC/dist/RTCMultiConnection.js"></script>
+
 </head>
 <style>
     *{
@@ -58,40 +59,59 @@ $userid = $_SESSION['user_id'];
     </div>
 </section>
 
-<script src="../RTC/dist/RTCMultiConnection.js"></script>
+<!--<script src="../RTC/dist/RTCMultiConnection.js"></script>-->
 <script src="../RTC/node_modules/webrtc-adapter/out/adapter.js"></script>
 <script src="https://rtcmulticonnection.herokuapp.com/socket.io/socket.io.js"></script>
-<script src="../RTC/demos/js/jquery-3.3.1.slim.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js">
+    <script src="../RTC/demos/js/jquery-3.3.1.slim.min.js"></script>
 <!-- custom layout for HTML5 audio/video elements -->
 <link rel="stylesheet" href="../RTC/dev/getHTMLMediaElement.css">
 <script src="../RTC/dev/getHTMLMediaElement.js"></script>
 <script>
-    var roomid = null;
-    var userid = null;
+    var roomuserid = '<?php echo $roomid ?>';
+    var userid = '<?php echo $userid ?>';
     // ......................................................
     // .......................UI Code........................
     // ......................................................
     $(document).ready( function() {
-        roomid = '<?php echo $roomid ?>';
-        userid = '<?php echo $userid ?>';
         var isRoomExist = false;
-        if(roomid !== userid){
+        if(roomuserid !== userid){
             connection.sdpConstraints.mandatory = {
                 OfferToReceiveAudio: true,
                 OfferToReceiveVideo: true
             };
-            connection.join(roomid);
+            connection.join(roomuserid);
         } else {
             // if room doesn't exist, it means that current user will create the room
             connection.open(roomid, function() {
+                updateRoomid(roomid);
             });
         }
     });
 
+    function updateRoomid(roomid){
+        $.ajax({
+            url:"./streaming_update.php",
+            type:"GET",
+            data:{roomid:roomid},
+            datatype:"html",
+            success:function(data){}
+        });
+    }
+
     var connection = new RTCMultiConnection();
     connection.socketURL = 'https://192.168.145.128:9001/';
     connection.extra.userFullName = userid;
-    connection.socketMessageEvent = 'video-broadcast-demo';
+    // connection.socketMessageEvent = 'video-broadcast-demo';
+    connection.socketMessageEvent = 'canvas-dashboard-demo';
+    var publicRoomIdentifier = 'dashboard';
+    connection.publicRoomIdentifier = publicRoomIdentifier;
+    connection.socketMessageEvent = publicRoomIdentifier;
+    // keep room opened even if owner leaves
+    connection.autoCloseEntireSession = true;
+    // https://www.rtcmulticonnection.org/docs/maxParticipantsAllowed/
+    connection.maxParticipantsAllowed = 1000;
+
     connection.session = {
         audio: true,
         video: true,
@@ -111,6 +131,19 @@ $userid = $_SESSION['user_id'];
             'stun:stun.l.google.com:19302?transport=udp',
         ]
     }];
+    connection.onmessage = function(event) {
+        if (event.data.chatMessage) {
+            appendChatMessage(event);
+            return;
+        }
+        if (event.data.checkmark === 'received') {
+            var checkmarkElement = document.getElementById(event.data.checkmark_id);
+            if (checkmarkElement) {
+                checkmarkElement.style.display = 'inline';
+            }
+            return;
+        }
+    };
     connection.videosContainer = document.getElementById('videos-container');
     connection.onstream = function(event) {
         var existing = document.getElementById(event.streamid);
@@ -190,8 +223,8 @@ $userid = $_SESSION['user_id'];
     // ......................Chat ...........................
     // ......................................................
     document.getElementById('btn-chat-message').onclick = function() {
-        var chatMessage = $('#test').html();
-        $('#test').html('');
+        var chatMessage = document.getElementById('test').value;
+        // $('#test').html('');
 
         if (!chatMessage || !chatMessage.replace(/ /g, '').length) return;
 
@@ -225,7 +258,7 @@ $userid = $_SESSION['user_id'];
                 });
             }
         } else {
-            div.innerHTML = '<b>You:</b> <img class="checkmark" id="' + checkmark_id + '" title="Received" src="https://www.webrtc-experiment.com/images/checkmark.png"><br>' + event;
+            div.innerHTML = '<b>You:</b><br>' + event;
             div.style.background = '#cbffcb';
         }
 
@@ -237,22 +270,6 @@ $userid = $_SESSION['user_id'];
     // ......................................................
     // ......................Handling Room-ID................
     // ......................................................
-
-    function showRoomURL(roomid) {
-        var roomHashURL = '#' + roomid;
-        var roomQueryStringURL = '?roomid=' + roomid;
-
-        var html = '<h2>Unique URL for your room:</h2><br>';
-
-        html += 'Hash URL: <a href="' + roomHashURL + '" target="_blank">' + roomHashURL + '</a>';
-        html += '<br>';
-        html += 'QueryString URL: <a href="' + roomQueryStringURL + '" target="_blank">' + roomQueryStringURL + '</a>';
-
-        var roomURLsDiv = document.getElementById('room-urls');
-        roomURLsDiv.innerHTML = html;
-
-        roomURLsDiv.style.display = 'block';
-    }
 
     (function() {
         var params = {},
@@ -273,39 +290,7 @@ $userid = $_SESSION['user_id'];
     } else {
         roomid = connection.token();
     }
-    document.getElementById('room-id').value = roomid;
-    document.getElementById('room-id').onkeyup = function() {
-        localStorage.setItem(connection.socketMessageEvent, document.getElementById('room-id').value);
-    };
 
-    var hashString = location.hash.replace('#', '');
-    if (hashString.length && hashString.indexOf('comment-') == 0) {
-        hashString = '';
-    }
-
-    var roomid = params.roomid;
-    if (!roomid && hashString.length) {
-        roomid = hashString;
-    }
-
-    if (roomid && roomid.length) {
-        document.getElementById('room-id').value = roomid;
-        localStorage.setItem(connection.socketMessageEvent, roomid);
-
-        // auto-join-room
-        (function reCheckRoomPresence() {
-            connection.checkPresence(roomid, function(isRoomExist) {
-                if (isRoomExist) {
-                    connection.join(roomid);
-                    return;
-                }
-
-                setTimeout(reCheckRoomPresence, 5000);
-            });
-        })();
-
-        disableInputButtons();
-    }
 
     // detect 2G
     if(navigator.connection &&
