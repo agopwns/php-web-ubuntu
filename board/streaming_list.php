@@ -1,15 +1,15 @@
 <?php
     session_start();
     $db = include('../dbconnect.php');
-
 // 게시판 카테고리명 가져오기
 $board_name = $_GET['bName'];
 $board_name = str_replace('%20' , '', $board_name);
 //echo $board_name ."<br>";//xptmxm
-
 $user_id = $_SESSION['user_id'];
 
-
+// 방송 검색
+$sql = "select * from streaming WHERE stm_is_stream='Y' order by stm_index desc";
+$result = $db->query($sql);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -24,9 +24,15 @@ $user_id = $_SESSION['user_id'];
     <script src="../RTC/demos/js/jquery-3.3.1.slim.min.js"></script>
     <script src="../RTC/demos/js/popper.min.js"></script>
     <script src="../RTC/demos/js/bootstrap.min.js"></script>
-    <script src="../RTC/socket.io/socket.io.js"></script>
+    <script src="https://rtcmulticonnection.herokuapp.com/socket.io/socket.io.js"></script>
     <script src="../RTC/dist/RTCMultiConnection.min.js"></script>
 </head>
+<style>
+    * {
+      color:#fff;
+    }
+
+</style>
 <body>
 <div class="parent_container">
     <div id="headers"><?php include '../include/include_header.php'?></div>
@@ -36,13 +42,27 @@ $user_id = $_SESSION['user_id'];
     <div class="container page-top" style="margin-top: 40px">
         <h2 style="color:#fff;">방송</h2>
         <button id="btn-create-room" style="float:right; color:#fff;">방송 시작</button>
-        <div class="table-div" style="display: flex; margin-bottom: 20px;">
-            <div class="table-div-child" style=" width: 780px;">
-
-            </div>
-        </div>
-        <div class="row" style="display: block">
-
+        <div class="table" style="">
+            <?php
+            if ($result->num_rows > 0) {
+                if (isset($emptyData)) {
+                    echo '현재 방송중인 방이 존재하지 않습니다.';
+                } else {
+                    echo "<table>";
+                    while ($row = $result->fetch_assoc()) {
+                        $title = $row['stm_title'];
+                        $roomid = $row['stm_roomid'];
+                        echo "<tr style='height: 60px' onClick='location.href=\"./streaming_view.php?roomid=" . $roomid . "&title=" . $title . "\"' style='cursor:pointer'>";
+                        echo "<td style='border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;'>$title</td>";
+                        echo "<td style='text-align:center; border-bottom:1px solid white; border-collapse:collapse; color:white; cursor:pointer;'>$user_id</td>";
+                        ?>
+                        </tr>
+                        <?php
+                    }
+                    echo "</table>";
+                }
+            }
+            ?>
         </div>
     </div>
 </div>
@@ -56,9 +76,9 @@ $user_id = $_SESSION['user_id'];
 
     var connection = new RTCMultiConnection();
 
-    //connection.socketURL = '/';
     connection.socketURL = 'https://192.168.145.128:9001/';
-     // connection.socketURL = 'https://rtcmulticonnection.herokuapp.com:443/';
+    //connection.socketURL = '/';
+    // connection.socketURL = 'https://rtcmulticonnection.herokuapp.com:443/';
 
     /// make this room public
     connection.publicRoomIdentifier = publicRoomIdentifier;
@@ -76,10 +96,10 @@ $user_id = $_SESSION['user_id'];
     });
 
     $('#btn-create-room').click(function() {
+        var roomtitle = prompt("방송 제목을 입력해주세요.");
         // var roomid = $('#txt-roomid').val().toString();
-        var roomid = '1234';
-
         connection.extra.userFullName = '<?php echo $user_id?>';
+        var roomid = connection.extra.userFullName + '<?php rand(1,1000)?>';
 
         connection.checkPresence(roomid, function(isRoomExist) {
             if (isRoomExist === true) {
@@ -88,7 +108,15 @@ $user_id = $_SESSION['user_id'];
             }
             connection.sessionid = roomid;
             connection.isInitiator = true;
-            openCanvasDesigner();
+            $.ajax({
+                url:"./streaming_create.php",
+                type:"GET",
+                data:{title:roomtitle, roomid:roomid},
+                datatype:"html",
+                success:function(data){
+                    document.location.href='streaming_view.php?roomid='+roomid+'&title='+roomtitle;
+                }
+            });
         });
     });
 
@@ -99,7 +127,6 @@ $user_id = $_SESSION['user_id'];
             + '&userFullName=' + connection.extra.userFullName;
         window.open(href);
     }
-
 
 </script>
 </html>
