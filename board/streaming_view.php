@@ -37,6 +37,28 @@ $userid = $_SESSION['user_id'];
         background-color: #373737;
         overflow-y: auto;
     }
+    /* 내가 보낸 메시지 */
+    .me {
+        width: 90%;
+        margin: auto;
+        text-align: left;
+        color: lightcoral;
+        background-color: #373737;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
+
+    /* 상대방이 보낸 메시지 */
+    .other {
+        width: 90%;
+        margin: auto;
+        text-align: left;
+        color: white;
+        background-color: #373737;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
+
 </style>
 <body>
 
@@ -52,8 +74,8 @@ $userid = $_SESSION['user_id'];
                 <!-- 채팅 메시지 영역 -->
             </div>
             <div>
-                <input type="text" id="test" style="color:#fff; width: 200px;" placeholder="메시지를 입력해주세요..">
-                <button id="btn-chat-message" style="color:#fff; width: 50px;">전송</button>
+                <input type="text" id="inputText" style="color:#fff; width: 200px;" placeholder="메시지를 입력해주세요..">
+                <button id="btn-chat-message" style="color:#fff; width: 50px;" onclick="myOnClick()">전송</button>
             </div>
         </div>
     </div>
@@ -62,6 +84,7 @@ $userid = $_SESSION['user_id'];
 <!--<script src="../RTC/dist/RTCMultiConnection.js"></script>-->
 <script src="../RTC/node_modules/webrtc-adapter/out/adapter.js"></script>
 <script src="https://rtcmulticonnection.herokuapp.com/socket.io/socket.io.js"></script>
+<script src="../node/node_modules/socket.io-client/dist/socket.io.js"></script>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js">
     <script src="../RTC/demos/js/jquery-3.3.1.slim.min.js"></script>
 <!-- custom layout for HTML5 audio/video elements -->
@@ -132,19 +155,19 @@ $userid = $_SESSION['user_id'];
             'stun:stun.l.google.com:19302?transport=udp',
         ]
     }];
-    connection.onmessage = function(event) {
-        if (event.data.chatMessage) {
-            appendChatMessage(event);
-            return;
-        }
-        if (event.data.checkmark === 'received') {
-            var checkmarkElement = document.getElementById(event.data.checkmark_id);
-            if (checkmarkElement) {
-                checkmarkElement.style.display = 'inline';
-            }
-            return;
-        }
-    };
+    // connection.onmessage = function(event) {
+    //     if (event.data.chatMessage) {
+    //         appendChatMessage(event);
+    //         return;
+    //     }
+    //     if (event.data.checkmark === 'received') {
+    //         var checkmarkElement = document.getElementById(event.data.checkmark_id);
+    //         if (checkmarkElement) {
+    //             checkmarkElement.style.display = 'inline';
+    //         }
+    //         return;
+    //     }
+    // };
     connection.videosContainer = document.getElementById('videos-container');
     connection.onstream = function(event) {
         var existing = document.getElementById(event.streamid);
@@ -220,54 +243,7 @@ $userid = $_SESSION['user_id'];
             connection.join(connection.sessionid);
         }
     };
-    // ......................................................
-    // ......................Chat ...........................
-    // ......................................................
-    document.getElementById('btn-chat-message').onclick = function() {
-        var chatMessage = document.getElementById('test').value;
-        // $('#test').html('');
 
-        if (!chatMessage || !chatMessage.replace(/ /g, '').length) return;
-
-        var checkmark_id = connection.userid + connection.token();
-
-        appendChatMessage(chatMessage, checkmark_id);
-
-        connection.send({
-            chatMessage: chatMessage,
-            checkmark_id: checkmark_id
-        });
-
-        connection.send({
-            typing: false
-        });
-    };
-    var conversationPanel = document.getElementById('chat');
-
-    function appendChatMessage(event, checkmark_id) {
-        var div = document.createElement('div');
-
-        div.className = 'message';
-
-        if (event.data) {
-            div.innerHTML = '<b>' + (event.extra.userFullName || event.userid) + ':</b><br>' + event.data.chatMessage;
-
-            if (event.data.checkmark_id) {
-                connection.send({
-                    checkmark: 'received',
-                    checkmark_id: event.data.checkmark_id
-                });
-            }
-        } else {
-            div.innerHTML = '<b>You:</b><br>' + event;
-            div.style.background = '#cbffcb';
-        }
-
-        conversationPanel.appendChild(div);
-
-        conversationPanel.scrollTop = conversationPanel.clientHeight;
-        conversationPanel.scrollTop = conversationPanel.scrollHeight - conversationPanel.scrollTop;
-    }
     // ......................................................
     // ......................Handling Room-ID................
     // ......................................................
@@ -298,6 +274,66 @@ $userid = $_SESSION['user_id'];
         navigator.connection.type === 'cellular' &&
         navigator.connection.downlinkMax <= 0.115) {
         alert('2G is not supported. Please use a better internet service.');
+    }
+
+    // ......................................................
+    // ......................Chat ...........................
+    // ......................................................
+
+    var socket = io.connect(':3100', {secure: true});
+
+    socket.emit('joinRoom', {roomName: '<?php echo $roomid?>'});
+    socket.emit('newUser', '<?php echo $userid?>');
+
+    socket.on('recMsg', function (data) {
+        console.log(data.comment);
+        $('#chat').append(data.comment);
+    });
+
+    socket.on('update', function(data){
+        var chat = document.getElementById('chat');
+
+        var message = document.createElement('div');
+        var node = document.createTextNode(`${data.name}: ${data.message}`);
+        var className = '';
+
+        // 타입에 따라 적용할 클래스를 다르게 지정
+        switch(data.type) {
+            case 'message':
+                className = 'other';
+                break;
+
+            case 'connect':
+                className = 'connect';
+                break;
+
+            case 'disconnect':
+                className = 'disconnect';
+                break;
+        }
+        message.classList.add(className);
+        message.appendChild(node);
+        chat.appendChild(message);
+    });
+
+    function myOnClick() {
+        // 입력되어있는 데이터 가져오기
+        var message = document.getElementById('inputText').value;
+
+        // 가져왔으니 데이터 빈칸으로 변경
+        document.getElementById('inputText').value = '';
+
+        // 내가 전송할 메시지 클라이언트에게 표시
+        var chat = document.getElementById('chat');
+        var msg = document.createElement('div');
+        var node = document.createTextNode("나: " + message);
+        msg.classList.add('me');
+        msg.appendChild(node);
+        chat.appendChild(msg);
+
+        // 서버로 message 이벤트 전달 + 데이터와 함께
+        socket.emit("reqMsg", {type: 'message', message: message});
+        $('#inputText').val('');
     }
 </script>
 
