@@ -1,18 +1,23 @@
 const express = require('express');
 const socket = require('socket.io');
-const http = require('http');
+const https = require('https');
 const fs = require('fs');
 const app = express(); // express 객체 생성
-const port = 3000;
+const port = 3100;
+var roomName;
 
-// express http 서버 생성
-const server = http.createServer(app);
+// express https 서버 생성
+var options = {
+    key: fs.readFileSync('../RTC/fake-keys/privatekey.pem'),
+    cert: fs.readFileSync('../RTC/fake-keys/certificate.pem'),
+    requestCert: false,
+    rejectUnauthorized: false
+};
+var server = require('https').createServer(options, app);
+
+// const server = https.createServer(app);
 // 생성된 서버를 socket.io에 바인딩
 const io = socket(server);
-
-// css와 js 사용할 수 있게 추가
-// app.use('./css', express.static('./static/css'));
-// app.use('./js', express.static('./static/js'));
 
 app.get('/', function(request, response){
     fs.readFile('./static/index.html', function(err,data){
@@ -31,39 +36,35 @@ app.get('/', function(request, response){
 // 해당 값에 따라 동작이 달라짐
 io.sockets.on('connection', function(socket){
 
+    var instanceId = socket.id;
+
+
     /* 새로운 유저가 접속했을 경우 다른 소켓에게도 알려줌 */
     socket.on('newUser', function(name) {
+        console.log('socket id : ' + instanceId);
         console.log(name + ' 님이 접속하였습니다.');
 
         /* 소켓에 이름 저장해두기 */
         socket.name = name;
-
-        /* 모든 소켓에게 전송 */
-        io.sockets.emit('update', {type: 'connect', name: 'SERVER', message: name + '님이 접속하였습니다.'});
     })
 
-    /* 전송한 메시지 받기 */
-    socket.on('message', function(data) {
-        /* 받은 데이터에 누가 보냈는지 이름을 추가 */
-        data.name = socket.name;
-
+    // socket.join 으로 들어갈 방의 이름을 명시해주고 해당 방을 생성
+    socket.on('joinRoom',function (data) {
         console.log(data);
+        socket.join(data.roomName);
+        roomName = data.roomName;
+    });
 
-        /* 보낸 사람을 제외한 나머지 유저에게 메시지 전송 */
-        socket.broadcast.emit('update', data);
+    socket.on('reqMsg', function (data) {
+        data.name = socket.name; // 이름 추가
+        console.log(data);
+        // io.sockets.in(roomName).emit('recMsg', {comment: socket.name + " : " + data.comment + "\r\n"});
+        socket.in(roomName).emit('update', data);
     })
 
-    /* 접속 종료 */
-    socket.on('disconnect', function() {
-        console.log(socket.name + '님이 나가셨습니다.');
-
-        /* 나가는 사람을 제외한 나머지 유저에게 메시지 전송 */
-        socket.broadcast.emit('update', {type: 'disconnect', name: 'SERVER', message: socket.name + '님이 나가셨습니다.'});
-    })
 })
 
-
-/* 서버를 8080 포트로 listen */
+/* 서버를 3100 포트로 listen */
 server.listen(port, function() {
     console.log('서버 실행 중..')
 })
