@@ -83,8 +83,8 @@ $userid = $_SESSION['user_id'];
             connection.join(roomuserid);
         } else {
             // if room doesn't exist, it means that current user will create the room
-            connection.open(roomid, function() {
-                updateRoomid(roomid);
+            connection.open(roomuserid, function() {
+                // updateRoomid(roomid);
             });
         }
     });
@@ -101,6 +101,7 @@ $userid = $_SESSION['user_id'];
 
     var connection = new RTCMultiConnection();
     connection.socketURL = 'https://192.168.145.128:9001/';
+    connection.sessionid = roomuserid;
     connection.extra.userFullName = userid;
     // connection.socketMessageEvent = 'video-broadcast-demo';
     connection.socketMessageEvent = 'canvas-dashboard-demo';
