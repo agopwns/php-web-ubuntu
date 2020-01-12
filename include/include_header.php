@@ -281,7 +281,8 @@
                 <li><a href="../board/board_list.php?bName=공지">공지</a></li>
                 <li><a href="../board/board_list.php?bName=자유">자유</a></li>
                 <li><a href="../board/streaming_list.php">방송</a></li>
-                <li><a href="../board/board_list.php?bName=장터">장터</a></li>
+                <li><a href="../board/game_jump.php">게임1</a></li>
+                <li><a href="../board/game_shooter.php">게임2</a></li>
                 <li><a href="../board/board_list.php?bName=문의">문의</a></li>
             </ul>
         </div>
