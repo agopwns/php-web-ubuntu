@@ -22,6 +22,7 @@ $user_id = $_SESSION['user_id'];
     <link rel="stylesheet" href="../css/img_board_list.css">
     <title>Peanut Community</title>
     <script src="../RTC/demos/js/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sketch.js/1.0.0/sketch.min.js"></script>
 </head>
 <style>
     body{
@@ -49,13 +50,12 @@ $user_id = $_SESSION['user_id'];
     <!-- Page Content -->
     <div class="container page-top" style="margin-top: 40px">
         <h2 style="color:#fff;">점프 게임</h2>
-        <button id="btn-create-room" style="float:right; color:#fff;">방송 시작</button>
         <div id="container">
 
         </div>
 
         <div class="controlls">
-            <p>점프: <b>클릭</b> or <b>스페이스바</b> or <b>UP</b> or <b>W</b> (꾹 누르면 좀 더 높이 점프)</p>
+            <p style="color:#fff;">점프: <b>클릭</b> or <b>스페이스바</b> or <b>UP</b> or <b>W</b> (꾹 누르면 좀 더 높이 점프)</p>
             <p></p>
         </div>
 
@@ -151,6 +151,7 @@ $user_id = $_SESSION['user_id'];
     /*****PLAYER****/
     /**************/
 
+    // 플레이어 객체 컨트롤은 여기서
     function Player(options){
 
         this.setPosition(options.x, options.y);
@@ -216,6 +217,7 @@ $user_id = $_SESSION['user_id'];
 
     /*******************PLATFORM MANAGER*************/
 
+    // 블럭 랜덤 생성
     function PlatformManager(){
         this.maxDistanceBetween = 300;
         this.colors = ['#2ca8c2', '#98cb4a', '#f76d3c', '#f15f74','#5481e6'];
@@ -342,7 +344,7 @@ $user_id = $_SESSION['user_id'];
                 break;
         }
 
-        this.aceleration += (this.acelerationTweening - this.aceleration) * 0.01;
+        this.aceleration += (this.acelerationTweening - this.aceleration) * 0.6; // 기본 0.01
 
         for (i = 0; i < this.platformManager.platforms.length; i++) {
             if(this.player.insercects(this.platformManager.platforms[i])){
