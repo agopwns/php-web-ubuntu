@@ -6,8 +6,6 @@ var Web3 = require('web3');
 
 const port = 4000;
 
-
-
 /* 서버를 4000 포트로 listen */
 server.listen(port, function() {
     console.log('서버 실행 중..')
