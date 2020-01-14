@@ -76,6 +76,13 @@ $userid = $_SESSION['user_id'];
             <div>
                 <input type="text" id="inputText" style="color:#fff; width: 200px;" placeholder="메시지를 입력해주세요..">
                 <button id="btn-chat-message" style="color:#fff; width: 50px;" onclick="myOnClick()">전송</button>
+                <?php
+                if($roomid != $userid){
+                    ?>
+                    <button id="btn-chat-message" style="color:#fff; width: 50px;" onclick="openWin()">후원</button>
+                    <?php
+                }
+                ?>
             </div>
         </div>
     </div>
@@ -93,6 +100,13 @@ $userid = $_SESSION['user_id'];
 <script>
     var roomuserid = '<?php echo $roomid ?>';
     var userid = '<?php echo $userid ?>';
+
+    function openWin(){
+        window.open("./streaming_donation.php?roomid=" + roomuserid, "후원하기", "width=500, height=400" +
+            ", toolbar=no, menubar=no, scrollbars=no, resizable=yes" );
+    }
+
+
     // ......................................................
     // .......................UI Code........................
     // ......................................................
