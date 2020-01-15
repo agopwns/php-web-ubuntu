@@ -4,6 +4,15 @@ $db = include('../dbconnect.php');
 $roomid = $_GET['roomid'];
 $userid = $_SESSION['user_id'];
 
+$sql = "select * from member where mem_userid='$roomid'";
+$result = $db->query($sql);
+$receiver_address = "";
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $receiver_address = $row['mem_ether_address'];
+    }
+}
+
 $sql = "select * from member where mem_userid='$userid'";
 $result = $db->query($sql);
 $sender_address = "";
@@ -62,16 +71,16 @@ if ($result->num_rows > 0) {
     </div>
     <div class="input-area">
         Private Key<br>
-        <input type="text" id="privateKey">
+        <input type="password" id="privateKey">
 <!--        <p style="color: #818181;">해당 사이트에서는 Private Key 를 저장하지 않습니다.</p>-->
     </div>
-    <div class="input-area" id="doneMessage">
+    <div class="input-area">
         후원 메시지<br>
-        <input type="text">
+        <input type="text" id="doneMessage">
     </div>
-    <div class="input-area" id="sendValue">
+    <div class="input-area" >
         후원하는 이더리움 수<br>
-        <input type="text">
+        <input type="text" id="sendValue">
         <button onclick="sendEther()">보내기</button>
     </div>
 </section>
@@ -87,6 +96,8 @@ if ($result->num_rows > 0) {
 <script src="../RTC/dev/getHTMLMediaElement.js"></script>
 <script>
     var sender_address = '<?php echo $sender_address ?>';
+    var receiver_address = '<?php echo $receiver_address ?>';
+    var current_value = 0;
 
     function getBalance(){
 
@@ -99,6 +110,7 @@ if ($result->num_rows > 0) {
                 success:function(data){
                     // 성공시 html 영역 바꿔주기
                     if(data != null || data != ""){
+                        current_value = data.result;
                         document.getElementById('etherBalance').innerText = data.result;
                     } else {
                         alert("오류 발생 : 지갑 주소를 확인해주세요.");
@@ -109,6 +121,63 @@ if ($result->num_rows > 0) {
             alert("지갑 주소를 확인해주세요.");
         }
     }
+
+    function sendEther(){
+
+        var sender_name = '<?php echo $userid?>';
+        var receiver_name = '<?php echo $roomid?>';
+        var private_key = document.getElementById('privateKey').value;
+        var done_message = document.getElementById('doneMessage').value;
+        var send_value = document.getElementById('sendValue').value;
+        // send_value 16진수로 변환
+        var hexa_str = send_value.toString(16);
+
+        if(sender_address != '' && receiver_address != ''){
+
+            if(current_value < send_value)
+            {
+                alert("이더 잔액이 부족합니다.");
+                return;
+            }
+
+            $.ajax({
+                url:"https://192.168.145.128:4001/sendEther",
+                type:"POST",
+                data:{
+                    sender_address : sender_address,
+                    receiver_address : receiver_address,
+                    send_value : hexa_str,
+                    private_key : private_key,
+                    done_message : done_message
+                },
+                datatype:"html",
+                success:function(data){
+                    // 성공시 html 영역 바꿔주기
+                    if(data.message == "200 ok"){
+                        alert("성공적으로 이더리움을 전송하였습니다.");
+
+                        // 채팅 서버에 알려주기
+                        var socket = io.connect(':3100', {secure: true});
+                        socket.emit('joinRoom', {roomName: '<?php echo $roomid?>'});
+                        socket.emit('newUser', '후원');
+
+                        var message = sender_name + "님이 " + receiver_name + "님에게 " +
+                            send_value + "이더를 후원하셨습니다.";
+                        // 서버로 message 이벤트 전달 + 데이터와 함께
+                        socket.emit("reqMsg", {type: 'donation', message: message});
+                        socket.emit("reqDonation", {send_value: send_value, done_message: done_message});
+
+                        self.close();
+                    } else {
+                        alert("오류 발생 : 지갑 주소를 확인해주세요.");
+                    }
+                }
+            });
+        } else {
+            alert("지갑 주소를 확인해주세요.");
+        }
+    }
+
     var roomuserid = '<?php echo $roomid ?>';
     var userid = '<?php echo $userid ?>';
 

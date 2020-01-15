@@ -59,6 +59,34 @@ $userid = $_SESSION['user_id'];
         margin-top: 10px;
     }
 
+    /* 후원 메시지 */
+    .donation {
+        width: 90%;
+        margin: auto;
+        text-align: left;
+        color: white;
+        background-color: #bb6ed0;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
+
+    #donaNoti{
+        display:none;  /* 평상시에는 서브메뉴가 안보이게 하기 */
+        height:auto;
+        padding:0px;
+        margin:0px;
+        margin-top: 60px;
+        border:0px;
+        font-size: 12px;
+        position:fixed;
+        top: 100px;
+        left: 200px;
+        width:300px;
+        height: 100px;
+        z-index:201;
+        background-color: azure;
+    }
+
 </style>
 <body>
 
@@ -67,6 +95,14 @@ $userid = $_SESSION['user_id'];
         <h1>Peanut Community Streaming</h1>
         <h2>방제 : 드루와</h2>
     </header>
+    <div id="donaNoti">
+        <div style="margin: 0 auto;">
+            <img src="../img/ethericon.png" style="width: 80px;opacity: 1;margin-left:100px;">
+        </div>
+        <div id="donaMessageArea" style="margin: 0 auto; opacity: 1;">
+
+        </div>
+    </div>
     <div id="video-chat-container" style="width: 1100px; height: 900px;">
         <div id="videos-container" style="width: width:840px; height:700px;"></div>
         <div id="main" style="width:260px; height: 470px;">
@@ -97,6 +133,7 @@ $userid = $_SESSION['user_id'];
 <!-- custom layout for HTML5 audio/video elements -->
 <link rel="stylesheet" href="../RTC/dev/getHTMLMediaElement.css">
 <script src="../RTC/dev/getHTMLMediaElement.js"></script>
+
 <script>
     var roomuserid = '<?php echo $roomid ?>';
     var userid = '<?php echo $userid ?>';
@@ -316,19 +353,75 @@ $userid = $_SESSION['user_id'];
             case 'message':
                 className = 'other';
                 break;
-
             case 'connect':
                 className = 'connect';
                 break;
-
             case 'disconnect':
                 className = 'disconnect';
+                break;
+            case 'donation':
+                className = 'donation';
                 break;
         }
         message.classList.add(className);
         message.appendChild(node);
         chat.appendChild(message);
     });
+
+    socket.on('donepopup', function(data){
+        var done_message = `${data.done_message}`;
+        var send_value = `${data.send_value}`;
+
+        var addText = done_message;
+        $("#donaMessageArea").append(addText);
+        speech(addText); // tts
+        var test = $("#donaNoti");
+        test.fadeOut(1);
+
+        test.fadeIn(2000);
+        var list = document.getElementById("donaNoti");
+        setTimeout(function(){ test.fadeOut(4000); },5000);
+        setTimeout(function(){ list.removeChild(list.childNodes[0]); },7500);
+
+    });
+
+    var voices = [];
+    function setVoiceList() {
+        voices = window.speechSynthesis.getVoices();
+    }
+    setVoiceList();
+    if (window.speechSynthesis.onvoiceschanged !== undefined) {
+        window.speechSynthesis.onvoiceschanged = setVoiceList;
+    }
+    function speech(txt) {
+        if(!window.speechSynthesis) {
+            alert("음성 재생을 지원하지 않는 브라우저입니다. 크롬, 파이어폭스 등의 최신 브라우저를 이용하세요");
+            return;
+        }
+        var lang = 'ko-KR';
+        var utterThis = new SpeechSynthesisUtterance(txt);
+        utterThis.onend = function (event) {
+            console.log('end');
+        };
+        utterThis.onerror = function(event) {
+            console.log('error', event);
+        };
+        var voiceFound = false;
+        for(var i = 0; i < voices.length ; i++) {
+            if(voices[i].lang.indexOf(lang) >= 0 || voices[i].lang.indexOf(lang.replace('-', '_')) >= 0) {
+                utterThis.voice = voices[i];
+                voiceFound = true;
+            }
+        }
+        if(!voiceFound) {
+            alert('voice not found');
+            return;
+        }
+        utterThis.lang = lang;
+        utterThis.pitch = 1;
+        utterThis.rate = 1; //속도
+        window.speechSynthesis.speak(utterThis);
+    }
 
     function myOnClick() {
         // 입력되어있는 데이터 가져오기

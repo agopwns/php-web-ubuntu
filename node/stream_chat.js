@@ -62,6 +62,13 @@ io.sockets.on('connection', function(socket){
         socket.in(roomName).emit('update', data);
     })
 
+    socket.on('reqDonation', function (data) {
+        data.name = socket.name; // 이름 추가
+        console.log(data);
+        // io.sockets.in(roomName).emit('recMsg', {comment: socket.name + " : " + data.comment + "\r\n"});
+        socket.in(roomName).emit('donepopup', data);
+    })
+
 })
 
 /* 서버를 3100 포트로 listen */
