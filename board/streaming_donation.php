@@ -167,7 +167,7 @@ if ($result->num_rows > 0) {
                         socket.emit("reqMsg", {type: 'donation', message: message});
                         socket.emit("reqDonation", {send_value: send_value, done_message: done_message});
 
-                        self.close();
+                        // self.close();
                     } else {
                         alert("오류 발생 : 지갑 주소를 확인해주세요.");
                     }
