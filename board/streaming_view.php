@@ -11,11 +11,22 @@ $userid = $_SESSION['user_id'];
     <meta charset="utf-8">
     <title>Peanut Community Streaming</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <link href="https://rawgit.com/mervick/emojionearea/master/dist/emojionearea.css" rel="stylesheet" />
     <script src="../RTC/demos/menu.js"></script>
     <script src="../RTC/node_modules/webrtc-adapter/out/adapter.js"></script>
-<!--    <script src="../RTC/dist/RTCMultiConnection.min.js"></script>-->
-    <script src="../RTC/dist/RTCMultiConnection.js"></script>
 
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js">
+    <script src="../RTC/demos/js/jquery-3.3.1.slim.min.js"></script>
+    <script src="../RTC/dist/RTCMultiConnection.js"></script>
+<!--    <script src="https://rawgit.com/mervick/emojionearea/master/dist/emojionearea.js"></script>-->
+    <script src="../RTC/demos/js/emojionearea.min.js"></script>
+    <script src="../RTC/node_modules/webrtc-adapter/out/adapter.js"></script>
+    <script src="https://rtcmulticonnection.herokuapp.com/socket.io/socket.io.js"></script>
+    <script src="../node/node_modules/socket.io-client/dist/socket.io.js"></script>
+
+    <!-- custom layout for HTML5 audio/video elements -->
+    <link rel="stylesheet" href="../RTC/dev/getHTMLMediaElement.css">
+    <script src="../RTC/dev/getHTMLMediaElement.js"></script>
 </head>
 <style>
     *{
@@ -102,15 +113,18 @@ $userid = $_SESSION['user_id'];
         <div id="donaMessageArea" style="margin: 0 auto; opacity: 1;">
 
         </div>
+
     </div>
     <div id="video-chat-container" style="width: 1100px; height: 900px;">
         <div id="videos-container" style="width: width:840px; height:700px;"></div>
         <div id="main" style="width:260px; height: 470px;">
+
             <div id="chat" style="width:260px ;height:470px;">
                 <!-- 채팅 메시지 영역 -->
             </div>
             <div>
-                <input type="text" id="inputText" style="color:#fff; width: 200px;" placeholder="메시지를 입력해주세요..">
+<!--                <input type="text" id="inputText" style="color:#fff; width: 200px;" placeholder="메시지를 입력해주세요..">-->
+                <textarea id="inputText"></textarea>
                 <button id="btn-chat-message" style="color:#fff; width: 50px;" onclick="myOnClick()">전송</button>
                 <?php
                 if($roomid != $userid){
@@ -124,17 +138,14 @@ $userid = $_SESSION['user_id'];
     </div>
 </section>
 
-<!--<script src="../RTC/dist/RTCMultiConnection.js"></script>-->
-<script src="../RTC/node_modules/webrtc-adapter/out/adapter.js"></script>
-<script src="https://rtcmulticonnection.herokuapp.com/socket.io/socket.io.js"></script>
-<script src="../node/node_modules/socket.io-client/dist/socket.io.js"></script>
-<script src="https://code.jquery.com/jquery-3.1.1.min.js">
-    <script src="../RTC/demos/js/jquery-3.3.1.slim.min.js"></script>
-<!-- custom layout for HTML5 audio/video elements -->
-<link rel="stylesheet" href="../RTC/dev/getHTMLMediaElement.css">
-<script src="../RTC/dev/getHTMLMediaElement.js"></script>
-
-<script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#inputText").emojioneArea({
+            inline: true
+        });
+    });
+</script>
+<script type="text/javascript">
     var roomuserid = '<?php echo $roomid ?>';
     var userid = '<?php echo $userid ?>';
 
@@ -142,8 +153,6 @@ $userid = $_SESSION['user_id'];
         window.open("./streaming_donation.php?roomid=" + roomuserid, "후원하기", "width=500, height=400" +
             ", toolbar=no, menubar=no, scrollbars=no, resizable=yes" );
     }
-
-
     // ......................................................
     // .......................UI Code........................
     // ......................................................
@@ -342,11 +351,15 @@ $userid = $_SESSION['user_id'];
     });
 
     socket.on('update', function(data){
-        var chat = document.getElementById('chat');
-
-        var message = document.createElement('div');
-        var node = document.createTextNode(`${data.name}: ${data.message}`);
+        // var chat = document.getElementById('chat');
+        // var message = document.createElement('div');
+        // var node = document.createTextNode(`${data.name}: ${data.message}`);
         var className = '';
+
+        var chat = document.getElementById('chat');
+        var div = document.createElement('div');
+        div.innerHTML = `${data.name}: ${data.message}`
+
 
         // 타입에 따라 적용할 클래스를 다르게 지정
         switch(data.type) {
@@ -363,9 +376,14 @@ $userid = $_SESSION['user_id'];
                 className = 'donation';
                 break;
         }
-        message.classList.add(className);
-        message.appendChild(node);
-        chat.appendChild(message);
+        // message.classList.add(className);
+        // message.appendChild(node);
+        // chat.appendChild(message);
+        div.classList.add(className);
+        chat.appendChild(div);
+        // 채팅창 스크롤바 높이 조절
+        chat.scrollTop = chat.clientHeight;
+        chat.scrollTop = chat.scrollHeight - chat.scrollTop;
     });
 
     socket.on('donepopup', function(data){
@@ -425,23 +443,94 @@ $userid = $_SESSION['user_id'];
 
     function myOnClick() {
         // 입력되어있는 데이터 가져오기
-        var message = document.getElementById('inputText').value;
+        // var message = document.getElementById('inputText').value;
 
         // 가져왔으니 데이터 빈칸으로 변경
-        document.getElementById('inputText').value = '';
+        // document.getElementById('inputText').value = '';
 
+        var message = $('.emojionearea-editor').html(); // area 영역 안의 html 을 통째로 변수에 담음
+        $('.emojionearea-editor').html(''); // area 영역 비우기
+
+        if (!message || !message.replace(/ /g, '').length) return; // 내용이 공백일 경우 리턴
+
+        // 기존
         // 내가 전송할 메시지 클라이언트에게 표시
+        // var chat = document.getElementById('chat');
+        // var msg = document.createElement('div');
+        // var node = document.createTextNode("나: " + message);
+        // msg.classList.add('me');
+        // msg.appendChild(node);
+        // chat.appendChild(msg);
+
         var chat = document.getElementById('chat');
-        var msg = document.createElement('div');
-        var node = document.createTextNode("나: " + message);
-        msg.classList.add('me');
-        msg.appendChild(node);
-        chat.appendChild(msg);
+        var div = document.createElement('div');
+        div.className = 'me';
+        div.innerHTML = "나 : " + message;
+        chat.appendChild(div);
 
         // 서버로 message 이벤트 전달 + 데이터와 함께
         socket.emit("reqMsg", {type: 'message', message: message});
         $('#inputText').val('');
+        // 채팅창 스크롤바 높이 조절
+        chat.scrollTop = chat.clientHeight;
+        chat.scrollTop = chat.scrollHeight - chat.scrollTop;
     }
+
+    // 엔터키 입력 함수
+    window.onkeyup = function(e) {
+        var code = e.keyCode || e.which;
+        if (code == 13) {
+            $('#btn-chat-message').click();
+        }
+    };
+    // ......................................................
+    // ...................... Emoji ...........................
+    // ......................................................
+
+    // 채팅 입력창 안에 에모지 에어리어 나타나게 하는 함수
+    // $('#chat').emojioneArea({
+    //     pickerPosition: "top",
+    //     filtersPosition: "bottom",
+    //     tones: false,
+    //     autocomplete: true,
+    //     inline: true,
+    //     hidePickerOnBlur: true,
+    //     events: {
+    //         focus: function() {
+    //             $('.emojionearea-category').unbind('click').bind('click', function() {
+    //                 $('.emojionearea-button-close').click();
+    //             });
+    //         },
+    //         keyup: function(e) {
+    //             var chatMessage = $('.emojionearea-editor').html();
+    //             if (!chatMessage || !chatMessage.replace(/ /g, '').length) {
+    //                 connection.send({
+    //                     typing: false
+    //                 });
+    //             }
+    //             clearTimeout(keyPressTimer);
+    //             numberOfKeys++;
+    //
+    //             if (numberOfKeys % 3 === 0) {
+    //                 connection.send({
+    //                     typing: true
+    //                 });
+    //             }
+    //             keyPressTimer = setTimeout(function() {
+    //                 connection.send({
+    //                     typing: false
+    //                 });
+    //             }, 1200);
+    //         },
+    //         blur: function() {
+    //             // $('#btn-chat-message').click();
+    //             connection.send({
+    //                 typing: false
+    //             });
+    //         }
+    //     }
+    // });
+
 </script>
 
 <footer>
