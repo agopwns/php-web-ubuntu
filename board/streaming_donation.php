@@ -32,7 +32,6 @@ if ($result->num_rows > 0) {
     <script src="../RTC/node_modules/webrtc-adapter/out/adapter.js"></script>
 <!--    <script src="../RTC/dist/RTCMultiConnection.min.js"></script>-->
     <script src="../RTC/dist/RTCMultiConnection.js"></script>
-
 </head>
 <style>
     *{
@@ -54,7 +53,24 @@ if ($result->num_rows > 0) {
 
 </style>
 <body>
-
+<div id="progressbar" class="loader loader--style1" title="0" style="display: none;">
+    <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+         width="40px" height="40px" viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve">
+  <path opacity="0.2" fill="#000" d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946
+    s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634
+    c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26.541,26.626,31.749,20.201,31.749z"/>
+        <path fill="#000" d="M26.013,10.047l1.654-2.866c-2.198-1.272-4.743-2.012-7.466-2.012h0v3.312h0
+    C22.32,8.481,24.301,9.057,26.013,10.047z">
+            <animateTransform attributeType="xml"
+                              attributeName="transform"
+                              type="rotate"
+                              from="0 20 20"
+                              to="360 20 20"
+                              dur="0.5s"
+                              repeatCount="indefinite"/>
+        </path>
+  </svg>
+</div>
 <section class="make-center">
     <header>
         <h1>Peanut Community Donation</h1>
@@ -81,7 +97,7 @@ if ($result->num_rows > 0) {
     <div class="input-area" >
         후원하는 이더리움 수<br>
         <input type="text" id="sendValue">
-        <button onclick="sendEther()">보내기</button>
+        <button id="sendButton" onclick="sendEther()">보내기</button>
     </div>
 </section>
 
@@ -139,6 +155,13 @@ if ($result->num_rows > 0) {
                 alert("이더 잔액이 부족합니다.");
                 return;
             }
+            // 버튼 비활성화
+            // var btn = document.getElementById('sendButton');
+            // btn.disabled = true;
+
+            // 프로그레스바 활성화
+            // var test = $("#progressbar");
+            // test.fadeIn(1);
 
             $.ajax({
                 url:"https://192.168.145.128:4001/sendEther",
@@ -173,6 +196,8 @@ if ($result->num_rows > 0) {
                     }
                 }
             });
+            // test.fadeOut(1);
+            // btn.disabled = false;
         } else {
             alert("지갑 주소를 확인해주세요.");
         }
@@ -181,25 +206,7 @@ if ($result->num_rows > 0) {
     var roomuserid = '<?php echo $roomid ?>';
     var userid = '<?php echo $userid ?>';
 
-    function myOnClick() {
-        // 입력되어있는 데이터 가져오기
-        var message = document.getElementById('inputText').value;
 
-        // 가져왔으니 데이터 빈칸으로 변경
-        document.getElementById('inputText').value = '';
-
-        // 내가 전송할 메시지 클라이언트에게 표시
-        var chat = document.getElementById('chat');
-        var msg = document.createElement('div');
-        var node = document.createTextNode("나: " + message);
-        msg.classList.add('me');
-        msg.appendChild(node);
-        chat.appendChild(msg);
-
-        // 서버로 message 이벤트 전달 + 데이터와 함께
-        socket.emit("reqMsg", {type: 'message', message: message});
-        $('#inputText').val('');
-    }
 </script>
 
 <footer>

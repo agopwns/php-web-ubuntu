@@ -274,15 +274,12 @@
         <div class="menubar-container">
             <ul>
                 <li><a href="../board/board_list.php?bName=최근글">최근 글</a></li>
-                <li><a href="../board/board_list.php?bName=레전드 BEST">레전드 BEST</a></li>
-                <li><a href="../board/board_list.php?bName=MONTH BEST">MONTH BEST</a></li>
-                <li><a href="../board/board_list.php?bName=WEEK BEST">WEEK BEST</a></li>
-                <li><a href="../board/board_list.php?bName=DAY BEST">DAY BEST</a></li>
                 <li><a href="../board/board_list.php?bName=공지">공지</a></li>
                 <li><a href="../board/board_list.php?bName=자유">자유</a></li>
+                <li><a href="../board/scrap.php">인기 검색어</a></li>
                 <li><a href="../board/streaming_list.php">방송</a></li>
-                <li><a href="../board/game_jump.php">게임1</a></li>
-                <li><a href="../board/game_shooter.php">게임2</a></li>
+                <li><a href="../board/game_jump.php">점프 게임</a></li>
+                <li><a href="../board/game_shooter.php">횡단보도 게임</a></li>
                 <li><a href="../board/board_list.php?bName=문의">문의</a></li>
             </ul>
         </div>

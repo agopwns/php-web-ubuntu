@@ -148,6 +148,8 @@ $userid = $_SESSION['user_id'];
 <script type="text/javascript">
     var roomuserid = '<?php echo $roomid ?>';
     var userid = '<?php echo $userid ?>';
+    var popupX = (window.screen.width / 2) - (200 / 2);// 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
+    var popupY= (window.screen.height / 2) - (300 / 2);// 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
 
     function openWin(){
         window.open("./streaming_donation.php?roomid=" + roomuserid, "후원하기", "width=500, height=400" +
@@ -215,19 +217,7 @@ $userid = $_SESSION['user_id'];
             'stun:stun.l.google.com:19302?transport=udp',
         ]
     }];
-    // connection.onmessage = function(event) {
-    //     if (event.data.chatMessage) {
-    //         appendChatMessage(event);
-    //         return;
-    //     }
-    //     if (event.data.checkmark === 'received') {
-    //         var checkmarkElement = document.getElementById(event.data.checkmark_id);
-    //         if (checkmarkElement) {
-    //             checkmarkElement.style.display = 'inline';
-    //         }
-    //         return;
-    //     }
-    // };
+
     connection.videosContainer = document.getElementById('videos-container');
     connection.onstream = function(event) {
         var existing = document.getElementById(event.streamid);
@@ -390,6 +380,10 @@ $userid = $_SESSION['user_id'];
         var done_message = `${data.done_message}`;
         var send_value = `${data.send_value}`;
 
+        $('#donaMessageArea').val(''); // 도네 메시지 초기화
+        $('#donaMessageArea').innerText = '';
+        document.getElementById('donaMessageArea').innerText = '';
+
         var addText = done_message;
         $("#donaMessageArea").append(addText);
         speech(addText); // tts
@@ -398,8 +392,9 @@ $userid = $_SESSION['user_id'];
 
         test.fadeIn(2000);
         var list = document.getElementById("donaNoti");
-        setTimeout(function(){ test.fadeOut(4000); },5000);
-        setTimeout(function(){ list.removeChild(list.childNodes[0]); },7500);
+        setTimeout(function(){ test.fadeOut(3000); },4000);
+        setTimeout(function(){ list.removeChild(list.childNodes[0]); },6500);
+
 
     });
 
@@ -483,53 +478,6 @@ $userid = $_SESSION['user_id'];
             $('#btn-chat-message').click();
         }
     };
-    // ......................................................
-    // ...................... Emoji ...........................
-    // ......................................................
-
-    // 채팅 입력창 안에 에모지 에어리어 나타나게 하는 함수
-    // $('#chat').emojioneArea({
-    //     pickerPosition: "top",
-    //     filtersPosition: "bottom",
-    //     tones: false,
-    //     autocomplete: true,
-    //     inline: true,
-    //     hidePickerOnBlur: true,
-    //     events: {
-    //         focus: function() {
-    //             $('.emojionearea-category').unbind('click').bind('click', function() {
-    //                 $('.emojionearea-button-close').click();
-    //             });
-    //         },
-    //         keyup: function(e) {
-    //             var chatMessage = $('.emojionearea-editor').html();
-    //             if (!chatMessage || !chatMessage.replace(/ /g, '').length) {
-    //                 connection.send({
-    //                     typing: false
-    //                 });
-    //             }
-    //             clearTimeout(keyPressTimer);
-    //             numberOfKeys++;
-    //
-    //             if (numberOfKeys % 3 === 0) {
-    //                 connection.send({
-    //                     typing: true
-    //                 });
-    //             }
-    //             keyPressTimer = setTimeout(function() {
-    //                 connection.send({
-    //                     typing: false
-    //                 });
-    //             }, 1200);
-    //         },
-    //         blur: function() {
-    //             // $('#btn-chat-message').click();
-    //             connection.send({
-    //                 typing: false
-    //             });
-    //         }
-    //     }
-    // });
 
 </script>
 
