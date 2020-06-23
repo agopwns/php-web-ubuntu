@@ -39,6 +39,7 @@
   - Ethereum 
   - Geth 
   - NodeJS 
+  - Express
   - Socket.io
   - WebRTC
   - HTML/CSS/JS/JQuery
